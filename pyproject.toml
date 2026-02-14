@@ -5,7 +5,7 @@ description = "Railway-oriented Result type for Polars data pipelines"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
-authors = [{ name = "Garry", email = "" }]
+authors = [{ name = "Attica-oss", email = "g.mounac@outlook.com" }]
 keywords = ["polars", "result", "railway-oriented-programming", "error-handling"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -60,7 +60,7 @@ known-first-party = ["polars_result"]
 
 # ---------- ty ----------
 [tool.ty.environment]
-python-version = "3.12"
+python-version = "3.14"
 
 # ---------- pytest ----------
 [tool.pytest.ini_options]

@@ -21,7 +21,7 @@ def load_data(data: dict) -> Result[pl.DataFrame, Exception]:
     try:
         df = pl.DataFrame(data)
         return Result.ok(df)
-    except Exception as e:
+    except PolarsResultError as e:
         return Result.err(PolarsResultError(f"Failed to load data: {e}"))
 
 
@@ -92,6 +92,6 @@ result_recovered = (
 )
 
 if result_recovered.is_ok():
-    df = result_recovered.unwrap()
-    print(f"✓ Recovered — {df.height} valid rows:")
-    print(df)
+    df_ = result_recovered.unwrap()
+    print(f"✓ Recovered — {df_.height} valid rows:")
+    print(df_)
