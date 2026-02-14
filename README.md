@@ -1,3 +1,8 @@
+[![PyPI version](https://img.shields.io/pypi/v/polars-result)](https://pypi.org/project/polars-result/)
+[![Python](https://img.shields.io/pypi/pyversions/polars-result)](https://pypi.org/project/polars-result/)
+[![License](https://img.shields.io/github/license/Attica-OSS/polars-result)](https://github.com/Attica-OSS/polars-result/blob/main/LICENSE)
+[![CI](https://github.com/Attica-OSS/polars-result/actions/workflows/publish.yml/badge.svg)](https://github.com/Attica-OSS/polars-result/actions)
+
 # polars-result
 
 Railway-oriented `Result` type for building robust Polars data pipelines.
