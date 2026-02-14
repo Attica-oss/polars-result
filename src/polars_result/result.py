@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from typing import Generic, TypeVar
 
 from .exceptions import PolarsResultError
-from .formatting import format_result_data
 
 T = TypeVar("T")
 E = TypeVar("E", bound=Exception)
