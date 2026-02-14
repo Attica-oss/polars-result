@@ -142,7 +142,7 @@ dependencies = [
     { name = "polars" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -151,14 +151,15 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "polars", specifier = ">=1.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.11" },
-    { name = "ty", marker = "extra == 'dev'", specifier = ">=0.0.1a7" },
+requires-dist = [{ name = "polars", specifier = ">=1.0" }]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=8.0" },
+    { name = "pytest-cov", specifier = ">=5.0" },
+    { name = "ruff", specifier = ">=0.11" },
+    { name = "ty", specifier = ">=0.0.1a7" },
 ]
-provides-extras = ["dev"]
 
 [[package]]
 name = "polars-runtime-32"

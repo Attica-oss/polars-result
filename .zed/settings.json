@@ -2,12 +2,7 @@
   "languages": {
     "Python": {
       "language_servers": ["ruff", "ty"],
-      "formatter": {
-        "external": {
-          "command": "ruff",
-          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
-        },
-      },
+      "formatter": "language_server",
       "format_on_save": "on",
       "tab_size": 4,
     },
@@ -19,15 +14,6 @@
           "lineLength": 99,
           "lint": {
             "preview": true,
-          },
-        },
-      },
-    },
-    "ty": {
-      "initialization_options": {
-        "settings": {
-          "python": {
-            "pythonVersion": "3.14",
           },
         },
       },
