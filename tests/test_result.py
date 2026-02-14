@@ -2,7 +2,7 @@
 
 import pytest
 
-from polars_result import GoogleSheetError, Result
+from polars_result import PolarsResultError, Result
 
 
 class TestResultOk:
@@ -45,7 +45,7 @@ class TestResultErr:
 
 class TestUnwrap:
     def test_unwrap_on_error_raises(self) -> None:
-        with pytest.raises(GoogleSheetError, match="Called unwrap on error"):
+        with pytest.raises(PolarsResultError, match="Called unwrap on error"):
             Result.err(ValueError("fail")).unwrap()
 
     def test_unwrap_or_returns_value(self) -> None:
@@ -55,11 +55,11 @@ class TestUnwrap:
         assert Result.err(ValueError("x")).unwrap_or(99) == 99
 
     def test_expect_on_error(self) -> None:
-        with pytest.raises(GoogleSheetError, match="custom msg"):
+        with pytest.raises(PolarsResultError, match="custom msg"):
             Result.err(ValueError("inner")).expect("custom msg")
 
     def test_unwrap_err_on_success_raises(self) -> None:
-        with pytest.raises(GoogleSheetError, match="Called unwrap_err on success"):
+        with pytest.raises(PolarsResultError, match="Called unwrap_err on success"):
             Result.ok(1).unwrap_err()
 
 
