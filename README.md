@@ -11,7 +11,7 @@ uv add polars-result
 ## Quick Start
 
 ```python
-from polars_result import Result, GoogleSheetError
+from polars_result import Result, PolarsResultError
 
 # Successful pipeline
 result = (
