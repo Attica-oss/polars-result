@@ -5,7 +5,7 @@ description = "Railway-oriented Result type for Polars data pipelines"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
-authors = [{ name = "Attica-oss", email = "g.mounac@outlook.com" }]
+authors = [{ name = "Attica-oss", email = "g.mounac@gmail.com" }]
 keywords = ["polars", "result", "railway-oriented-programming", "error-handling"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -65,3 +65,13 @@ python-version = "3.14"
 # ---------- pytest ----------
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+# ---------- hatchling ----------
+[project.urls]
+Homepage = "https://github.com/Attica-OSS/polars-result"
+Repository = "https://github.com/Attica-OSS/polars-result"
+Issues = "https://github.com/Attica-OSS/polars-result/issues"
+
+# ----------uv----------------
+[tool.uv]
+default-groups = ["dev"]
