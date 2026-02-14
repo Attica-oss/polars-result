@@ -7,6 +7,7 @@ from polars_result import PolarsResultError, Result
 
 class TestResultOk:
     """Test creating a successful Result."""
+
     def test_ok_creation(self) -> None:
         """Test creating a successful Result."""
         result = Result.ok(42)
@@ -30,6 +31,7 @@ class TestResultOk:
 
 class TestResultErr:
     """Test creating an error Result."""
+
     def test_err_creation(self) -> None:
         """Test creating an error Result."""
         error = ValueError("bad")
@@ -55,6 +57,7 @@ class TestResultErr:
 
 class TestUnwrap:
     """Test the unwrap method of Result."""
+
     def test_unwrap_on_error_raises(self) -> None:
         """Test that calling unwrap on an error Result raises an error."""
         with pytest.raises(PolarsResultError, match="Called unwrap on error"):
@@ -81,6 +84,7 @@ class TestUnwrap:
 
 class TestTransformers:
     """Test transformers for Result."""
+
     def test_map_on_ok(self) -> None:
         """Test that calling map on an Ok Result applies the function to the value."""
         assert Result.ok(5).map(lambda x: x * 2).unwrap() == 10
