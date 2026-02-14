@@ -72,6 +72,3 @@ Homepage = "https://github.com/Attica-OSS/polars-result"
 Repository = "https://github.com/Attica-OSS/polars-result"
 Issues = "https://github.com/Attica-OSS/polars-result/issues"
 
-# ----------uv----------------
-[tool.uv]
-default-groups = ["dev"]
