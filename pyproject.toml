@@ -1,6 +1,6 @@
 [project]
 name = "polars-result"
-version = "0.1.0"
+version = "0.2.0"
 description = "Railway-oriented Result type for Polars data pipelines"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -19,8 +19,6 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "auto-mix-prep>=0.2.0",
-    "marimo>=0.19.11",
     "polars>=1.0",
 ]
 
@@ -35,6 +33,8 @@ dev = [
     "pytest-cov>=5.0",
     "ruff>=0.11",
     "ty>=0.0.1a7",
+    "auto-mix-prep>=0.2.0",
+    "marimo>=0.19.11",
 ]
 
 [build-system]
