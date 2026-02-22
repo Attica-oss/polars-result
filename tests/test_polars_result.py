@@ -1,12 +1,10 @@
 """Tests for Polars Result operations."""
 
-import stat
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import polars as pl
 import pytest
-import starlette
 from polars.exceptions import PolarsError
 
 from polars_result import (
