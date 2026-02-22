@@ -2,7 +2,7 @@
 
 import polars as pl
 
-from polars_result import PolarsResultError, Result, ValidationError
+from polars_result import Err, Ok, PolarsResultError, Result, ValidationError
 
 # ── Simulate raw data (e.g. from Google Sheets) ─────────────────────────────
 
@@ -16,26 +16,25 @@ raw_data = {
 
 # ── Pipeline steps as Result-returning functions ─────────────────────────────
 
+
 def load_data(data: dict) -> Result[pl.DataFrame, Exception]:
     """Wrap raw data into a DataFrame."""
     try:
         df = pl.DataFrame(data)
-        return Result.ok(df)
+        return Ok(df)
     except PolarsResultError as e:
-        return Result.err(PolarsResultError(f"Failed to load data: {e}"))
+        return Err(PolarsResultError(f"Failed to load data: {e}"))
 
 
 def validate_containers(df: pl.DataFrame) -> Result[pl.DataFrame, Exception]:
     """Flag rows with invalid container numbers (must be 11 alphanumeric chars)."""
     validated = df.with_columns(
-        pl.col("container")
-        .str.contains(r"^[A-Z]{4}\d{7}$")
-        .alias("valid_container")
+        pl.col("container").str.contains(r"^[A-Z]{4}\d{7}$").alias("valid_container")
     )
     invalid_count = validated.filter(~pl.col("valid_container")).height
     if invalid_count > 0:
         print(f"  ⚠ {invalid_count} invalid container(s) found — flagged, not dropped")
-    return Result.ok(validated)
+    return Ok(validated)
 
 
 def fill_missing_tonnes(df: pl.DataFrame) -> pl.DataFrame:
@@ -49,10 +48,8 @@ def validate_services(df: pl.DataFrame) -> Result[pl.DataFrame, Exception]:
     actual = set(df["service"].unique().to_list())
     unknown = actual - known
     if unknown:
-        return Result.err(
-            ValidationError(f"Unknown service(s): {unknown}")
-        )
-    return Result.ok(df)
+        return Err(ValidationError(f"Unknown service(s): {unknown}"))
+    return Ok(df)
 
 
 # ── Run the pipeline ─────────────────────────────────────────────────────────
@@ -61,9 +58,9 @@ print("── Running data pipeline ──\n")
 
 result = (
     load_data(raw_data)
-    .bind(validate_containers)
+    .and_then(validate_containers)
     .map(fill_missing_tonnes)
-    .bind(validate_services)
+    .and_then(validate_services)
 )
 
 if result.is_ok():
@@ -80,15 +77,17 @@ KNOWN_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
 
 result_recovered = (
     load_data(raw_data)
-    .bind(validate_containers)
+    .and_then(validate_containers)
     .map(fill_missing_tonnes)
-    .bind(validate_services)
-    .or_else(lambda _e: (
-        load_data(raw_data)
-        .bind(validate_containers)
-        .map(fill_missing_tonnes)
-        .map(lambda df: df.filter(pl.col("service").is_in(KNOWN_SERVICES)))
-    ))
+    .and_then(validate_services)
+    .or_else(
+        lambda _e: (
+            load_data(raw_data)
+            .and_then(validate_containers)
+            .map(fill_missing_tonnes)
+            .map(lambda df: df.filter(pl.col("service").is_in(KNOWN_SERVICES)))
+        )
+    )
 )
 
 if result_recovered.is_ok():

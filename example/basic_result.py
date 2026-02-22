@@ -1,11 +1,11 @@
 """Basic usage of the Result type."""
 
-from polars_result import PolarsResultError, Result
+from polars_result import Err, Ok, PolarsResultError
 
 # ── Creating Results ─────────────────────────────────────────────────────────
 
-ok_result = Result.ok(42)
-err_result = Result.err(PolarsResultError("Something went wrong"))
+ok_result = Ok(42)
+err_result = Err(PolarsResultError("Something went wrong"))
 
 print(f"ok_result  → {ok_result}")
 print(f"err_result → {err_result}")

@@ -1,0 +1,378 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.20.1"
+  },
+  "cells": [
+    {
+      "id": "Hbol",
+      "code_hash": "16b73a59a030aa9d4f90fcf452d887ea",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "MJUe",
+      "code_hash": "d045f125456a9396623b085997be0d60",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"resultt-e-method-showcase\"><code>Result[T, E]</code> \u2014 Method Showcase</h1>\n<span class=\"paragraph\">A complete interactive reference for railway-oriented programming with the <code>Result</code> type.\nEach section demonstrates a method group with runnable examples drawn from maritime port operations.</span>\n<blockquote>\n<span class=\"paragraph\"><strong>Two tracks, one pipeline.</strong> <code>Ok[T]</code> carries a success value forward.\n<code>Err[E]</code> carries an error forward, bypassing every step that doesn't explicitly handle it.</span>\n</blockquote></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "10152cfc78318ba54c07313b06849cf5",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"1-construction\">1 \u00b7 Construction</h2>\n<span class=\"paragraph\">Create a <code>Result</code> by wrapping a value in <code>Ok</code> or an error in <code>Err</code>.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "LAal",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "42f58621af6cc1c2bbb90b3b47dfd61f",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">42.5</span><span class=\"p\">)</span>                  <span class=\"c1\"># \u2192 Ok(42.5)</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;vessel not found&quot;</span><span class=\"p\">)</span>   <span class=\"c1\"># \u2192 Err(&#39;vessel not found&#39;)</span>\n</code></pre></div>\n<span class=\"paragraph\">Both are plain dataclasses \u2014 no magic, no exceptions during construction.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "c25f055fe09917d8d3b357ef060a6f4d",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"2-checking-state\">2 \u00b7 Checking State</h2>\n<span class=\"paragraph\"><code>is_ok()</code>, <code>is_err()</code>, <code>is_ok_and()</code>, <code>is_err_and()</code></span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "PKri",
+      "code_hash": "354262930bc2c7792047f96b9ebe0554",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">result_ok</span>  <span class=\"o\">=</span> <span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">150.0</span><span class=\"p\">)</span>   \n<span class=\"n\">result_err</span> <span class=\"o\">=</span> <span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;invalid container&quot;</span><span class=\"p\">)</span>\n</code></pre></div>\n<table>\n<thead>\n<tr>\n<th>Expression</th>\n<th>Result</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>result_ok.is_ok()</code></td>\n<td><code>True</code></td>\n</tr>\n<tr>\n<td><code>result_ok.is_err()</code></td>\n<td><code>False</code></td>\n</tr>\n<tr>\n<td><code>result_err.is_ok()</code></td>\n<td><code>False</code></td>\n</tr>\n<tr>\n<td><code>result_err.is_err()</code></td>\n<td><code>True</code></td>\n</tr>\n</tbody>\n</table></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "b987856719320bda596d852936cdc6ce",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h3 id=\"predicate-checks-is_ok_and-is_err_and\">Predicate checks: <code>is_ok_and</code> / <code>is_err_and</code></h3>\n<div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">150.0</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">is_ok_and</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">t</span><span class=\"p\">:</span> <span class=\"n\">t</span> <span class=\"o\">&gt;</span> <span class=\"mi\">100</span><span class=\"p\">)</span>          <span class=\"c1\"># \u2192 True</span>\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">150.0</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">is_ok_and</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">t</span><span class=\"p\">:</span> <span class=\"n\">t</span> <span class=\"o\">&gt;</span> <span class=\"mi\">200</span><span class=\"p\">)</span>          <span class=\"c1\"># \u2192 False</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;Record missing&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">is_err_and</span><span class=\"p\">(</span>\n    <span class=\"k\">lambda</span> <span class=\"n\">e</span><span class=\"p\">:</span> <span class=\"s2\">&quot;mssing&quot;</span> <span class=\"ow\">in</span> <span class=\"n\">e</span><span class=\"p\">)</span>                     <span class=\"c1\"># \u2192 True</span>\n</code></pre></div>\n<span class=\"paragraph\">Useful for guard conditions without unwrapping first.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "SFPL",
+      "code_hash": "c7fed18b3e263c3234c10d68dc6f43a3",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"3-unwrapping\">3 \u00b7 Unwrapping</h2>\n<span class=\"paragraph\">Extract the inner value \u2014 safe and unsafe variants.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "BYtC",
+      "code_hash": "5b1b6efeb9dbe54c5f3ddff2e0a257ff",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">88.5</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">unwrap</span><span class=\"p\">()</span>                             <span class=\"c1\"># \u2192 88.5</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;no data&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">unwrap_or</span><span class=\"p\">(</span><span class=\"mf\">0.0</span><span class=\"p\">)</span>                 <span class=\"c1\"># \u2192 0.0</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;no data&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">unwrap_or_else</span><span class=\"p\">(</span>\n    <span class=\"k\">lambda</span> <span class=\"n\">e</span><span class=\"p\">:</span> <span class=\"sa\">f</span><span class=\"s2\">&quot;[fallback: </span><span class=\"si\">{</span><span class=\"n\">e</span><span class=\"si\">}</span><span class=\"s2\">]&quot;</span><span class=\"p\">)</span>            <span class=\"c1\"># \u2192 &#39;[fallback: no data]&#39;</span>\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"s2\">&quot;MyValue&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">expect</span><span class=\"p\">(</span>\n    <span class=\"s2\">&quot;value must be present&quot;</span><span class=\"p\">)</span>              <span class=\"c1\"># \u2192 &#39;MyValue&#39;</span>\n</code></pre></div>\n<table>\n<thead>\n<tr>\n<th>Method</th>\n<th>On <code>Ok</code></th>\n<th>On <code>Err</code></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>unwrap()</code></td>\n<td>returns value</td>\n<td><strong>raises</strong> <code>ValueError</code></td>\n</tr>\n<tr>\n<td><code>unwrap_err()</code></td>\n<td><strong>raises</strong> <code>ValueError</code></td>\n<td>returns error</td>\n</tr>\n<tr>\n<td><code>unwrap_or(default)</code></td>\n<td>returns value</td>\n<td>returns <code>default</code></td>\n</tr>\n<tr>\n<td><code>unwrap_or_else(fn)</code></td>\n<td>returns value</td>\n<td>calls <code>fn(error)</code></td>\n</tr>\n<tr>\n<td><code>expect(msg)</code></td>\n<td>returns value</td>\n<td><strong>raises</strong> with <code>msg</code></td>\n</tr>\n<tr>\n<td><code>expect_err(msg)</code></td>\n<td><strong>raises</strong> with <code>msg</code></td>\n<td>returns error</td>\n</tr>\n</tbody>\n</table>\n<blockquote>\n<span class=\"paragraph\">Prefer <code>unwrap_or</code> / <code>unwrap_or_else</code> in production; reserve <code>unwrap</code> / <code>expect</code> for tests or truly impossible error paths.</span>\n</blockquote></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "RGSE",
+      "code_hash": "d47984fc99ae59abed47cf8d19f582d0",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"4-mapping\">4 \u00b7 Mapping</h2>\n<span class=\"paragraph\">Transform the inner value with a plain (non-Result-returning) function.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Kclp",
+      "code_hash": "9f7cba43cc62a25443591432fc512db4",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h3 id=\"mapfn-t-u-resultu-e\"><code>map(fn: T \u2192 U) \u2192 Result[U, E]</code></h3>\n<div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">12.5</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">map</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">t</span><span class=\"p\">:</span> <span class=\"nb\">round</span><span class=\"p\">(</span><span class=\"n\">t</span> <span class=\"o\">*</span> <span class=\"mf\">1.1</span><span class=\"p\">,</span> <span class=\"mi\">2</span><span class=\"p\">))</span>   <span class=\"c1\"># apply 10% surcharge  \u2192 Ok(13.75)</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;missing data&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">map</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">t</span><span class=\"p\">:</span> <span class=\"n\">t</span> <span class=\"o\">*</span> <span class=\"mf\">1.1</span><span class=\"p\">)</span> <span class=\"c1\"># Err unchanged        \u2192 Err(&#39;missing data&#39;)</span>\n</code></pre></div>\n<span class=\"paragraph\"><code>map</code> <strong>never touches</strong> <code>Err</code> \u2014 it slides through untouched.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "emfo",
+      "code_hash": "d6a04c831944284d2d6e3f15cb34093b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h3 id=\"map_err-map_or-map_or_else\"><code>map_err</code>, <code>map_or</code>, <code>map_or_else</code></h3>\n<div class=\"language-python codehilite\"><pre><span></span><code><span class=\"c1\"># map_err \u2014 mirror of map, but for the Err side</span>\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">99.0</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">map_err</span><span class=\"p\">(</span><span class=\"nb\">str</span><span class=\"o\">.</span><span class=\"n\">upper</span><span class=\"p\">)</span>                   <span class=\"c1\"># \u2192 Ok(99.0)  (Ok unchanged)</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;invalid service code&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">map_err</span><span class=\"p\">(</span><span class=\"nb\">str</span><span class=\"o\">.</span><span class=\"n\">upper</span><span class=\"p\">)</span> <span class=\"c1\"># \u2192 Err(&#39;INVALID SERVICE CODE&#39;)</span>\n\n<span class=\"c1\"># map_or \u2014 collapse to a plain value with a fallback</span>\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">45.0</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">map_or</span><span class=\"p\">(</span><span class=\"mf\">0.0</span><span class=\"p\">,</span> <span class=\"k\">lambda</span> <span class=\"n\">t</span><span class=\"p\">:</span> <span class=\"n\">t</span> <span class=\"o\">*</span> <span class=\"mi\">2</span><span class=\"p\">)</span>         <span class=\"c1\"># \u2192 90.0</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;null&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">map_or</span><span class=\"p\">(</span><span class=\"mf\">0.0</span><span class=\"p\">,</span> <span class=\"k\">lambda</span> <span class=\"n\">t</span><span class=\"p\">:</span> <span class=\"n\">t</span> <span class=\"o\">*</span> <span class=\"mi\">2</span><span class=\"p\">)</span>      <span class=\"c1\"># \u2192 0.0</span>\n\n<span class=\"c1\"># map_or_else \u2014 fallback is computed from the error</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;zero weight&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">map_or_else</span><span class=\"p\">(</span>\n    <span class=\"k\">lambda</span> <span class=\"n\">e</span><span class=\"p\">:</span> <span class=\"sa\">f</span><span class=\"s2\">&quot;default due to: </span><span class=\"si\">{</span><span class=\"n\">e</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span>\n    <span class=\"k\">lambda</span> <span class=\"n\">t</span><span class=\"p\">:</span> <span class=\"n\">t</span> <span class=\"o\">*</span> <span class=\"mi\">2</span><span class=\"p\">,</span>\n<span class=\"p\">)</span>  <span class=\"c1\"># \u2192 &#39;default due to: zero weight&#39;</span>\n</code></pre></div>\n<table>\n<thead>\n<tr>\n<th>Method</th>\n<th>Ok path</th>\n<th>Err path</th>\n<th>Returns</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>map(f)</code></td>\n<td><code>Ok(f(v))</code></td>\n<td>pass-through</td>\n<td><code>Result</code></td>\n</tr>\n<tr>\n<td><code>map_err(f)</code></td>\n<td>pass-through</td>\n<td><code>Err(f(e))</code></td>\n<td><code>Result</code></td>\n</tr>\n<tr>\n<td><code>map_or(d, f)</code></td>\n<td><code>f(v)</code></td>\n<td><code>d</code></td>\n<td>plain value</td>\n</tr>\n<tr>\n<td><code>map_or_else(df, f)</code></td>\n<td><code>f(v)</code></td>\n<td><code>df(e)</code></td>\n<td>plain value</td>\n</tr>\n</tbody>\n</table></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Hstk",
+      "code_hash": "c27b07d97b557df9ce4e96cf200e1fe0",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"5-chaining-bind-and_then\">5 \u00b7 Chaining \u2014 <code>bind</code> / <code>and_then</code></h2>\n<span class=\"paragraph\">Chain operations that themselves return a <code>Result</code>.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "nWHF",
+      "code_hash": "b960e6d1bd30b901022e9b412b1213e6",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">parse_currency</span><span class=\"p\">(</span><span class=\"n\">raw</span><span class=\"p\">):</span>  <span class=\"o\">...</span> <span class=\"c1\"># str \u2192 Result[float, str]</span>\n<span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">apply_rate</span><span class=\"p\">(</span><span class=\"n\">value</span><span class=\"p\">):</span> <span class=\"o\">...</span> <span class=\"c1\"># float \u2192 Result[float, str]   (@$18.50/t)</span>\n<span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">check_invoice_limit</span><span class=\"p\">(</span><span class=\"n\">amount</span><span class=\"p\">):</span> <span class=\"o\">...</span> <span class=\"c1\"># float \u2192 Result[float, str]</span>\n\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"s2\">&quot;42.5&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">parse_tonnes</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">apply_rate</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">check_invoice_limit</span><span class=\"p\">)</span>\n<span class=\"c1\"># \u2192 Ok(786.25)</span>\n\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"s2\">&quot;-5&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">parse_tonnes</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">apply_rate</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">check_invoice_limit</span><span class=\"p\">)</span>\n<span class=\"c1\"># \u2192 Err(&#39;currency must be positive&#39;)  \u2190 short-circuits here, apply_rate never called</span>\n\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"s2\">&quot;abc&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">parse_tonnes</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">apply_rate</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">check_invoice_limit</span><span class=\"p\">)</span>\n<span class=\"c1\"># \u2192 Err(&quot;cannot parse &#39;abc&#39; as float&quot;)  \u2190 short-circuits at parse step</span>\n\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"s2\">&quot;300&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">parse_tonnes</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">apply_rate</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"n\">check_invoice_limit</span><span class=\"p\">)</span>\n<span class=\"c1\"># \u2192 Err(&#39;invoice $5550.0 exceeds limit $5000.0&#39;)</span>\n</code></pre></div>\n<span class=\"paragraph\"><code>and_then</code> vs <code>map</code> in one rule: if the function you're chaining <strong>can fail</strong> (returns <code>Result</code>), use <code>and_then</code>. If it's a plain transform that <strong>can't fail</strong>, use <code>map</code>.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "iLit",
+      "code_hash": "7568a0ac154640cfb14dbd0efd43187b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"6-error-recovery-or_else\">6 \u00b7 Error Recovery \u2014 <code>or_else</code></h2>\n<span class=\"paragraph\">Handle an <code>Err</code> and try to get back onto the <code>Ok</code> track.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ZHCJ",
+      "code_hash": "432cc7ad635759222af0d93698ed0c89",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">strict_lookup</span><span class=\"p\">(</span><span class=\"s2\">&quot;booking&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">or_else</span><span class=\"p\">(</span><span class=\"n\">fallback_to_misc</span><span class=\"p\">)</span>  <span class=\"c1\"># \u2192 Ok(&#39;booking&#39;)  (Ok, no recovery needed)</span>\n<span class=\"n\">strict_lookup</span><span class=\"p\">(</span><span class=\"s2\">&quot;transportation&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">or_else</span><span class=\"p\">(</span><span class=\"n\">fallback_to_misc</span><span class=\"p\">)</span>     <span class=\"c1\"># \u2192 Ok(&#39;transportation&#39;)      (recovered)</span>\n<span class=\"n\">strict_lookup</span><span class=\"p\">(</span><span class=\"s2\">&quot;transportation&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">or_else</span><span class=\"p\">(</span><span class=\"n\">log_and_fail</span><span class=\"p\">)</span>         <span class=\"c1\"># \u2192 Ok(&#39;transportation&#39;)  (stayed Err, enriched)</span>\n</code></pre></div>\n<span class=\"paragraph\"><code>or_else</code> is the <strong>mirror of <code>bind</code></strong>: it operates on the <strong>Err</strong> side. Its callback receives the error value and must return a <code>Result</code> \u2014 you can either recover to <code>Ok</code> or return a new (possibly transformed) <code>Err</code>.</span>\n<table>\n<thead>\n<tr>\n<th></th>\n<th><code>bind</code> / <code>and_then</code></th>\n<th><code>or_else</code></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Activates on</td>\n<td><code>Ok</code></td>\n<td><code>Err</code></td>\n</tr>\n<tr>\n<td>Skips</td>\n<td><code>Err</code></td>\n<td><code>Ok</code></td>\n</tr>\n<tr>\n<td>Callback returns</td>\n<td><code>Result</code></td>\n<td><code>Result</code></td>\n</tr>\n</tbody>\n</table></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ROlb",
+      "code_hash": "9329cfa84c3c151ec63b45b87705870b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"7-side-effects-inspect-inspect_err\">7 \u00b7 Side-Effects \u2014 <code>inspect</code> / <code>inspect_err</code></h2>\n<span class=\"paragraph\">Tap into the pipeline for logging without altering the value.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "qnkX",
+      "code_hash": "f97a29e25c8a8d7d9a2105d9f12ad530",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">log</span> <span class=\"o\">=</span> <span class=\"p\">[]</span>\n\n<span class=\"n\">result</span> <span class=\"o\">=</span> <span class=\"p\">(</span>\n    <span class=\"n\">Ok</span><span class=\"p\">({</span><span class=\"s2\">&quot;item&quot;</span><span class=\"p\">:</span> <span class=\"s2\">&quot;Books&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;value&quot;</span><span class=\"p\">:</span> <span class=\"mf\">22.0</span><span class=\"p\">})</span>\n    <span class=\"o\">.</span><span class=\"n\">inspect</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">d</span><span class=\"p\">:</span> <span class=\"n\">log</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;\u2713 loaded: </span><span class=\"si\">{</span><span class=\"n\">d</span><span class=\"p\">[</span><span class=\"s1\">&#39;item&#39;</span><span class=\"p\">]</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">))</span>\n    <span class=\"o\">.</span><span class=\"n\">map</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">d</span><span class=\"p\">:</span> <span class=\"n\">d</span><span class=\"p\">[</span><span class=\"s2\">&quot;value&quot;</span><span class=\"p\">])</span>\n    <span class=\"o\">.</span><span class=\"n\">inspect</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">t</span><span class=\"p\">:</span> <span class=\"n\">log</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;\u2713 value extracted: </span><span class=\"si\">{</span><span class=\"n\">t</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">))</span>\n    <span class=\"o\">.</span><span class=\"n\">and_then</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">t</span><span class=\"p\">:</span> <span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"n\">t</span> <span class=\"o\">*</span> <span class=\"mf\">18.5</span><span class=\"p\">)</span> <span class=\"k\">if</span> <span class=\"n\">t</span> <span class=\"o\">&gt;</span> <span class=\"mi\">0</span> <span class=\"k\">else</span> <span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;Free&quot;</span><span class=\"p\">))</span>\n    <span class=\"o\">.</span><span class=\"n\">inspect</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">a</span><span class=\"p\">:</span> <span class=\"n\">log</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;\u2713 invoice amount: $</span><span class=\"si\">{</span><span class=\"n\">a</span><span class=\"si\">:</span><span class=\"s2\">.2f</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">))</span>\n    <span class=\"o\">.</span><span class=\"n\">inspect_err</span><span class=\"p\">(</span><span class=\"k\">lambda</span> <span class=\"n\">e</span><span class=\"p\">:</span> <span class=\"n\">log</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;\u2717 error: </span><span class=\"si\">{</span><span class=\"n\">e</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">))</span>\n<span class=\"p\">)</span>\n</code></pre></div>\n<span class=\"paragraph\"><strong>Log output:</strong>\n<div class=\"language-gdscript codehilite\"><pre><span></span><code><span class=\"w\">  </span><span class=\"err\">\u2713</span><span class=\"w\"> </span><span class=\"n\">loaded</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"n\">Books</span>\n<span class=\"w\">  </span><span class=\"err\">\u2713</span><span class=\"w\"> </span><span class=\"n\">value</span><span class=\"w\"> </span><span class=\"n\">extracted</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"mf\">22.0</span>\n<span class=\"w\">  </span><span class=\"err\">\u2713</span><span class=\"w\"> </span><span class=\"n\">invoice</span><span class=\"w\"> </span><span class=\"n\">amount</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"o\">$</span><span class=\"mf\">407.00</span>\n</code></pre></div></span>\n<span class=\"paragraph\"><strong>Final result:</strong> <code>Ok(407.0)</code></span>\n<span class=\"paragraph\">Both <code>inspect</code> and <code>inspect_err</code> <strong>always return <code>self</code></strong> unchanged \u2014 they are purely for side-effects like logging, metrics, or debugging. They never alter the track you're on.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "TqIu",
+      "code_hash": "7690beeea5b3ec8a6fce2689c0cda3d4",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"8-flatten\">8 \u00b7 <code>flatten</code></h2>\n<span class=\"paragraph\">Collapse a <code>Result[Result[T, E], E]</code> into <code>Result[T, E]</code>.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Vxnm",
+      "code_hash": "647af5459a955a94352e98a1d0e6f136",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">42.5</span><span class=\"p\">))</span><span class=\"o\">.</span><span class=\"n\">flatten</span><span class=\"p\">()</span>        <span class=\"c1\"># \u2192 Ok(42.5)</span>\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;inner error&quot;</span><span class=\"p\">))</span><span class=\"o\">.</span><span class=\"n\">flatten</span><span class=\"p\">()</span> <span class=\"c1\"># \u2192 Err(&#39;inner error&#39;)</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;outer error&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">flatten</span><span class=\"p\">()</span>  <span class=\"c1\"># \u2192 Err(&#39;outer error&#39;)</span>\n</code></pre></div>\n<span class=\"paragraph\"><code>flatten</code> comes up naturally when a function that returns <code>Result</code> is used inside <code>map</code> (instead of <code>bind</code>). The result is <code>Ok(Result(...))</code> \u2014 one level too deep. You can either switch to <code>bind</code>, or call <code>.flatten()</code> afterward:</span>\n<div class=\"language-python codehilite\"><pre><span></span><code><span class=\"c1\"># These are equivalent:</span>\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"s2\">&quot;42.5&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">bind</span><span class=\"p\">(</span><span class=\"n\">parse_tonnes</span><span class=\"p\">)</span>\n<span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"s2\">&quot;42.5&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">map</span><span class=\"p\">(</span><span class=\"n\">parse_tonnes</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">flatten</span><span class=\"p\">()</span>\n</code></pre></div></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "DnEU",
+      "code_hash": "597365d7c4841b11283c53bd455a144c",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"9-iter-__iter__\">9 \u00b7 <code>iter</code> / <code>__iter__</code></h2>\n<span class=\"paragraph\">Treat a <code>Result</code> as a zero-or-one element sequence.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ulZA",
+      "code_hash": "9cc5696777d409b65a7f8d644fbded1e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">results</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">12.5</span><span class=\"p\">),</span> <span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;bad&quot;</span><span class=\"p\">),</span> <span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">33.0</span><span class=\"p\">),</span> <span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;null&quot;</span><span class=\"p\">),</span> <span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"mf\">8.75</span><span class=\"p\">)]</span>\n\n<span class=\"c1\"># Comprehension \u2014 iterating Ok yields the value, Err yields nothing</span>\n<span class=\"n\">ok_values</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">v</span> <span class=\"k\">for</span> <span class=\"n\">r</span> <span class=\"ow\">in</span> <span class=\"n\">results</span> <span class=\"k\">for</span> <span class=\"n\">v</span> <span class=\"ow\">in</span> <span class=\"n\">r</span><span class=\"p\">]</span>\n<span class=\"c1\"># \u2192 [12.5, 33.0, 8.75]</span>\n\n<span class=\"n\">total</span> <span class=\"o\">=</span> <span class=\"nb\">sum</span><span class=\"p\">(</span><span class=\"n\">v</span> <span class=\"k\">for</span> <span class=\"n\">r</span> <span class=\"ow\">in</span> <span class=\"n\">results</span> <span class=\"k\">for</span> <span class=\"n\">v</span> <span class=\"ow\">in</span> <span class=\"n\">r</span><span class=\"p\">)</span>\n<span class=\"c1\"># \u2192 54.25</span>\n</code></pre></div>\n<span class=\"paragraph\"><code>Ok</code> is iterable and yields its value <strong>once</strong>. <code>Err</code> yields <strong>nothing</strong>. This makes it trivial to filter a list of <code>Result</code> values down to just the successes without any explicit <code>if r.is_ok()</code> guard.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ecfG",
+      "code_hash": "319474c8b38262fef41a3daf77289b18",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"10-into_ok-into_err\">10 \u00b7 <code>into_ok</code> / <code>into_err</code></h2>\n<span class=\"paragraph\">Express that the other variant is <strong>statically impossible</strong>.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Pvdt",
+      "code_hash": "82cfa7de8d23dd9b9a1792368d1b902e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">Ok</span><span class=\"p\">(</span><span class=\"s2\">&quot;Books&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">into_ok</span><span class=\"p\">()</span>        <span class=\"c1\"># \u2192 &#39;Books&#39;</span>\n<span class=\"n\">Err</span><span class=\"p\">(</span><span class=\"s2\">&quot;permanent failure&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">into_err</span><span class=\"p\">()</span> <span class=\"c1\"># \u2192 &#39;permanent failure&#39;</span>\n</code></pre></div>\n<span class=\"paragraph\">These are <strong>intentionally asymmetric</strong> \u2014 calling <code>into_ok()</code> on an <code>Err</code> raises <code>TypeError</code> (not <code>ValueError</code>), signalling a programming contract violation rather than a data error.</span>\n<blockquote>\n<span class=\"paragraph\">Think of them as the \"I promise this can't be the other variant\" escape hatch, mirroring Rust's <code>Result::into_ok</code> which is only callable when <code>E = Infallible</code>. Use them at system boundaries where you've already filtered/validated and want clean extraction without <code>.unwrap()</code>.</span>\n</blockquote></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ZBYS",
+      "code_hash": "80ed708aaf7b79692a42bdff6681c869",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"11-full-pipeline-putting-it-all-together\">11 \u00b7 Full Pipeline \u2014 Putting it all together</h2></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "aLJB",
+      "code_hash": "6abf8e9aee3fbafb43191f46ca4a779b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-python codehilite\"><pre><span></span><code><span class=\"n\">rows</span> <span class=\"o\">=</span> <span class=\"p\">[</span>\n    <span class=\"p\">(</span><span class=\"s2\">&quot;MSCU1234567&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;stevedoring&quot;</span><span class=\"p\">,</span>        <span class=\"mf\">42.5</span><span class=\"p\">),</span>\n    <span class=\"p\">(</span><span class=\"s2\">&quot;TCLU9876543&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;cold_storage&quot;</span><span class=\"p\">,</span>       <span class=\"mf\">18.0</span><span class=\"p\">),</span>\n    <span class=\"p\">(</span><span class=\"s2\">&quot;BAD-ID&quot;</span><span class=\"p\">,</span>      <span class=\"s2\">&quot;stevedoring&quot;</span><span class=\"p\">,</span>        <span class=\"mf\">10.0</span><span class=\"p\">),</span>   <span class=\"c1\"># \u2190 bad container</span>\n    <span class=\"p\">(</span><span class=\"s2\">&quot;MSCU1112233&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;unknown_service&quot;</span><span class=\"p\">,</span>    <span class=\"mf\">5.0</span><span class=\"p\">),</span>    <span class=\"c1\"># \u2190 bad service</span>\n    <span class=\"p\">(</span><span class=\"s2\">&quot;AMFU7654321&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;container_handling&quot;</span><span class=\"p\">,</span> <span class=\"mf\">600.0</span><span class=\"p\">),</span>  <span class=\"c1\"># \u2190 over limit</span>\n<span class=\"p\">]</span>\n</code></pre></div>\n<span class=\"paragraph\"><strong>Invoiced successfully (3 rows):</strong>\n<div class=\"language-scdoc codehilite\"><pre><span></span><code>  \u2713 MSCU1234567     stevedoring              42.5t  \u2192 $  786.25\n  \u2713 TCLU9876543     cold_storage             18.0t  \u2192 $  432.00\n  \u2713 AMFU7654321     container_handling      600.0t  \u2192 $7,650.00\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nTOTAL                                             $8,868.25\n</code></pre></div></span>\n<span class=\"paragraph\"><strong>Rejected (2 rows):</strong>\n<div class=\"language-tsql codehilite\"><pre><span></span><code><span class=\"w\">  </span><span class=\"err\">\u2717</span><span class=\"w\"> </span><span class=\"o\">[</span><span class=\"n\">BAD-ID</span><span class=\"o\">]</span><span class=\"w\"> </span><span class=\"n\">invalid</span><span class=\"w\"> </span><span class=\"n\">container</span><span class=\"w\"> </span><span class=\"nf\">format</span><span class=\"err\">:</span><span class=\"w\"> </span><span class=\"s1\">&#39;BAD-ID&#39;</span>\n<span class=\"w\">  </span><span class=\"err\">\u2717</span><span class=\"w\"> </span><span class=\"o\">[</span><span class=\"n\">MSCU1112233</span><span class=\"o\">]</span><span class=\"w\"> </span><span class=\"k\">unknown</span><span class=\"w\"> </span><span class=\"nl\">service</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"s1\">&#39;unknown_service&#39;</span>\n</code></pre></div></span>\n<span class=\"paragraph\">Each step in the pipeline is a focused, testable function that knows nothing about the others. The <code>Result</code> type wires them together, handles all branching, and surfaces errors with full context \u2014 no <code>try/except</code> blocks, no <code>None</code> checks, no silent failures.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "nHfw",
+      "code_hash": "6d4c420cb7380c99f52144615c3c35ae",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"quick-reference\">Quick Reference</h2>\n<table>\n<thead>\n<tr>\n<th>Method</th>\n<th>Signature</th>\n<th>Activates on</th>\n<th>Returns</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>is_ok()</code></td>\n<td><code>\u2192 bool</code></td>\n<td>both</td>\n<td><code>bool</code></td>\n</tr>\n<tr>\n<td><code>is_err()</code></td>\n<td><code>\u2192 bool</code></td>\n<td>both</td>\n<td><code>bool</code></td>\n</tr>\n<tr>\n<td><code>is_ok_and(f)</code></td>\n<td><code>(T\u2192bool) \u2192 bool</code></td>\n<td><code>Ok</code></td>\n<td><code>bool</code></td>\n</tr>\n<tr>\n<td><code>is_err_and(f)</code></td>\n<td><code>(E\u2192bool) \u2192 bool</code></td>\n<td><code>Err</code></td>\n<td><code>bool</code></td>\n</tr>\n<tr>\n<td><code>unwrap()</code></td>\n<td><code>\u2192 T</code></td>\n<td><code>Ok</code></td>\n<td>value or <strong>raise</strong></td>\n</tr>\n<tr>\n<td><code>unwrap_err()</code></td>\n<td><code>\u2192 E</code></td>\n<td><code>Err</code></td>\n<td>error or <strong>raise</strong></td>\n</tr>\n<tr>\n<td><code>unwrap_or(d)</code></td>\n<td><code>T \u2192 T</code></td>\n<td><code>Ok</code></td>\n<td>value or default</td>\n</tr>\n<tr>\n<td><code>unwrap_or_else(f)</code></td>\n<td><code>(E\u2192T) \u2192 T</code></td>\n<td><code>Ok</code></td>\n<td>value or <code>f(err)</code></td>\n</tr>\n<tr>\n<td><code>expect(msg)</code></td>\n<td><code>str \u2192 T</code></td>\n<td><code>Ok</code></td>\n<td>value or <strong>raise</strong> msg</td>\n</tr>\n<tr>\n<td><code>expect_err(msg)</code></td>\n<td><code>str \u2192 E</code></td>\n<td><code>Err</code></td>\n<td>error or <strong>raise</strong> msg</td>\n</tr>\n<tr>\n<td><code>map(f)</code></td>\n<td><code>(T\u2192U) \u2192 Result[U,E]</code></td>\n<td><code>Ok</code></td>\n<td><code>Result</code></td>\n</tr>\n<tr>\n<td><code>map_err(f)</code></td>\n<td><code>(E\u2192F) \u2192 Result[T,F]</code></td>\n<td><code>Err</code></td>\n<td><code>Result</code></td>\n</tr>\n<tr>\n<td><code>map_or(d, f)</code></td>\n<td><code>(U, T\u2192U) \u2192 U</code></td>\n<td>both</td>\n<td>plain value</td>\n</tr>\n<tr>\n<td><code>map_or_else(df, f)</code></td>\n<td><code>(E\u2192U, T\u2192U) \u2192 U</code></td>\n<td>both</td>\n<td>plain value</td>\n</tr>\n<tr>\n<td><code>bind</code> / <code>and_then(f)</code></td>\n<td><code>(T\u2192Result[U,E]) \u2192 Result[U,E]</code></td>\n<td><code>Ok</code></td>\n<td><code>Result</code></td>\n</tr>\n<tr>\n<td><code>or_else(f)</code></td>\n<td><code>(E\u2192Result[T,F]) \u2192 Result[T,F]</code></td>\n<td><code>Err</code></td>\n<td><code>Result</code></td>\n</tr>\n<tr>\n<td><code>inspect(f)</code></td>\n<td><code>(T\u2192None) \u2192 self</code></td>\n<td><code>Ok</code></td>\n<td><code>self</code> (unchanged)</td>\n</tr>\n<tr>\n<td><code>inspect_err(f)</code></td>\n<td><code>(E\u2192None) \u2192 self</code></td>\n<td><code>Err</code></td>\n<td><code>self</code> (unchanged)</td>\n</tr>\n<tr>\n<td><code>flatten()</code></td>\n<td><code>\u2192 Result[T,E]</code></td>\n<td><code>Ok(Result)</code></td>\n<td>unwrapped <code>Result</code></td>\n</tr>\n<tr>\n<td><code>iter()</code></td>\n<td><code>\u2192 Iterator[T]</code></td>\n<td><code>Ok</code></td>\n<td>yields value once</td>\n</tr>\n<tr>\n<td><code>into_ok()</code></td>\n<td><code>\u2192 T</code></td>\n<td><code>Ok</code></td>\n<td>value or <code>TypeError</code></td>\n</tr>\n<tr>\n<td><code>into_err()</code></td>\n<td><code>\u2192 E</code></td>\n<td><code>Err</code></td>\n<td>error or <code>TypeError</code></td>\n</tr>\n</tbody>\n</table></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "xXTn",
+      "code_hash": "1d0db38904205bec4d6f6f6a1f6cec3e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    }
+  ]
+}
