@@ -1,0 +1,2368 @@
+ANN202 Missing return type annotation for private function `_`
+  --> example/showcase.py:13:5
+   |
+12 | @app.cell
+13 | def _():
+   |     ^
+14 |     from collections.abc import Callable, Iterator
+15 |     from dataclasses import dataclass
+   |
+help: Add return type annotation
+
+F401 [*] `collections.abc.Callable` imported but unused
+  --> example/showcase.py:14:33
+   |
+12 | @app.cell
+13 | def _():
+14 |     from collections.abc import Callable, Iterator
+   |                                 ^^^^^^^^
+15 |     from dataclasses import dataclass
+16 |     from typing import TypeVar
+   |
+help: Remove unused import
+
+F401 [*] `collections.abc.Iterator` imported but unused
+  --> example/showcase.py:14:43
+   |
+12 | @app.cell
+13 | def _():
+14 |     from collections.abc import Callable, Iterator
+   |                                           ^^^^^^^^
+15 |     from dataclasses import dataclass
+16 |     from typing import TypeVar
+   |
+help: Remove unused import
+
+F841 Local variable `U` is assigned to but never used
+  --> example/showcase.py:20:5
+   |
+18 |     T = TypeVar("T")
+19 |     E = TypeVar("E")
+20 |     U = TypeVar("U")
+   |     ^
+21 |     F = TypeVar("F")
+   |
+help: Remove assignment to unused variable `U`
+
+F841 Local variable `F` is assigned to but never used
+  --> example/showcase.py:21:5
+   |
+19 |     E = TypeVar("E")
+20 |     U = TypeVar("U")
+21 |     F = TypeVar("F")
+   |     ^
+22 |
+23 |     class Infallible:
+   |
+help: Remove assignment to unused variable `F`
+
+ANN202 Missing return type annotation for private function `unwrap_err`
+  --> example/showcase.py:40:13
+   |
+38 |             return self.value
+39 |
+40 |         def unwrap_err(self):
+   |             ^^^^^^^^^^
+41 |             raise ValueError(f"Called unwrap_err on Ok: {self.value}")
+   |
+help: Add return type annotation: `Never`
+
+ANN202 Missing return type annotation for private function `unwrap_or`
+  --> example/showcase.py:43:13
+   |
+41 |             raise ValueError(f"Called unwrap_err on Ok: {self.value}")
+42 |
+43 |         def unwrap_or(self, default):
+   |             ^^^^^^^^^
+44 |             return self.value
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `default`
+  --> example/showcase.py:43:29
+   |
+41 |             raise ValueError(f"Called unwrap_err on Ok: {self.value}")
+42 |
+43 |         def unwrap_or(self, default):
+   |                             ^^^^^^^
+44 |             return self.value
+   |
+
+ANN202 Missing return type annotation for private function `unwrap_or_else`
+  --> example/showcase.py:46:13
+   |
+44 |             return self.value
+45 |
+46 |         def unwrap_or_else(self, op):
+   |             ^^^^^^^^^^^^^^
+47 |             return self.value
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `op`
+  --> example/showcase.py:46:34
+   |
+44 |             return self.value
+45 |
+46 |         def unwrap_or_else(self, op):
+   |                                  ^^
+47 |             return self.value
+   |
+
+ANN202 Missing return type annotation for private function `expect`
+  --> example/showcase.py:49:13
+   |
+47 |             return self.value
+48 |
+49 |         def expect(self, msg):
+   |             ^^^^^^
+50 |             return self.value
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `msg`
+  --> example/showcase.py:49:26
+   |
+47 |             return self.value
+48 |
+49 |         def expect(self, msg):
+   |                          ^^^
+50 |             return self.value
+   |
+
+ANN202 Missing return type annotation for private function `expect_err`
+  --> example/showcase.py:52:13
+   |
+50 |             return self.value
+51 |
+52 |         def expect_err(self, msg):
+   |             ^^^^^^^^^^
+53 |             raise ValueError(f"{msg}: {self.value}")
+   |
+help: Add return type annotation: `Never`
+
+ANN001 Missing type annotation for function argument `msg`
+  --> example/showcase.py:52:30
+   |
+50 |             return self.value
+51 |
+52 |         def expect_err(self, msg):
+   |                              ^^^
+53 |             raise ValueError(f"{msg}: {self.value}")
+   |
+
+ANN202 Missing return type annotation for private function `map`
+  --> example/showcase.py:55:13
+   |
+53 |             raise ValueError(f"{msg}: {self.value}")
+54 |
+55 |         def map(self, fn):
+   |             ^^^
+56 |             return Ok(fn(self.value))
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `fn`
+  --> example/showcase.py:55:23
+   |
+53 |             raise ValueError(f"{msg}: {self.value}")
+54 |
+55 |         def map(self, fn):
+   |                       ^^
+56 |             return Ok(fn(self.value))
+   |
+
+ANN202 Missing return type annotation for private function `map_err`
+  --> example/showcase.py:58:13
+   |
+56 |             return Ok(fn(self.value))
+57 |
+58 |         def map_err(self, op):
+   |             ^^^^^^^
+59 |             return Ok(self.value)
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `op`
+  --> example/showcase.py:58:27
+   |
+56 |             return Ok(fn(self.value))
+57 |
+58 |         def map_err(self, op):
+   |                           ^^
+59 |             return Ok(self.value)
+   |
+
+ANN202 Missing return type annotation for private function `map_or`
+  --> example/showcase.py:61:13
+   |
+59 |             return Ok(self.value)
+60 |
+61 |         def map_or(self, default, f):
+   |             ^^^^^^
+62 |             return f(self.value)
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `default`
+  --> example/showcase.py:61:26
+   |
+59 |             return Ok(self.value)
+60 |
+61 |         def map_or(self, default, f):
+   |                          ^^^^^^^
+62 |             return f(self.value)
+   |
+
+ANN001 Missing type annotation for function argument `f`
+  --> example/showcase.py:61:35
+   |
+59 |             return Ok(self.value)
+60 |
+61 |         def map_or(self, default, f):
+   |                                   ^
+62 |             return f(self.value)
+   |
+
+ANN202 Missing return type annotation for private function `map_or_else`
+  --> example/showcase.py:64:13
+   |
+62 |             return f(self.value)
+63 |
+64 |         def map_or_else(self, default, f):
+   |             ^^^^^^^^^^^
+65 |             return f(self.value)
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `default`
+  --> example/showcase.py:64:31
+   |
+62 |             return f(self.value)
+63 |
+64 |         def map_or_else(self, default, f):
+   |                               ^^^^^^^
+65 |             return f(self.value)
+   |
+
+ANN001 Missing type annotation for function argument `f`
+  --> example/showcase.py:64:40
+   |
+62 |             return f(self.value)
+63 |
+64 |         def map_or_else(self, default, f):
+   |                                        ^
+65 |             return f(self.value)
+   |
+
+ANN202 Missing return type annotation for private function `map_or_default`
+  --> example/showcase.py:67:13
+   |
+65 |             return f(self.value)
+66 |
+67 |         def map_or_default(self, f, default):
+   |             ^^^^^^^^^^^^^^
+68 |             return f(self.value)
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `f`
+  --> example/showcase.py:67:34
+   |
+65 |             return f(self.value)
+66 |
+67 |         def map_or_default(self, f, default):
+   |                                  ^
+68 |             return f(self.value)
+   |
+
+ANN001 Missing type annotation for function argument `default`
+  --> example/showcase.py:67:37
+   |
+65 |             return f(self.value)
+66 |
+67 |         def map_or_default(self, f, default):
+   |                                     ^^^^^^^
+68 |             return f(self.value)
+   |
+
+ANN202 Missing return type annotation for private function `and_then`
+  --> example/showcase.py:70:13
+   |
+68 |             return f(self.value)
+69 |
+70 |         def and_then(self, fn):
+   |             ^^^^^^^^
+71 |             return fn(self.value)
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `fn`
+  --> example/showcase.py:70:28
+   |
+68 |             return f(self.value)
+69 |
+70 |         def and_then(self, fn):
+   |                            ^^
+71 |             return fn(self.value)
+   |
+
+ANN202 Missing return type annotation for private function `bind`
+  --> example/showcase.py:73:13
+   |
+71 |             return fn(self.value)
+72 |
+73 |         def bind(self, fn):
+   |             ^^^^
+74 |             return self.and_then(fn)
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `fn`
+  --> example/showcase.py:73:24
+   |
+71 |             return fn(self.value)
+72 |
+73 |         def bind(self, fn):
+   |                        ^^
+74 |             return self.and_then(fn)
+   |
+
+ANN202 Missing return type annotation for private function `or_else`
+  --> example/showcase.py:76:13
+   |
+74 |             return self.and_then(fn)
+75 |
+76 |         def or_else(self, op):
+   |             ^^^^^^^
+77 |             return Ok(self.value)
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `op`
+  --> example/showcase.py:76:27
+   |
+74 |             return self.and_then(fn)
+75 |
+76 |         def or_else(self, op):
+   |                           ^^
+77 |             return Ok(self.value)
+   |
+
+ANN202 Missing return type annotation for private function `is_ok_and`
+  --> example/showcase.py:79:13
+   |
+77 |             return Ok(self.value)
+78 |
+79 |         def is_ok_and(self, f):
+   |             ^^^^^^^^^
+80 |             return f(self.value)
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `f`
+  --> example/showcase.py:79:29
+   |
+77 |             return Ok(self.value)
+78 |
+79 |         def is_ok_and(self, f):
+   |                             ^
+80 |             return f(self.value)
+   |
+
+ANN202 Missing return type annotation for private function `is_err_and`
+  --> example/showcase.py:82:13
+   |
+80 |             return f(self.value)
+81 |
+82 |         def is_err_and(self, f):
+   |             ^^^^^^^^^^
+83 |             return False
+   |
+help: Add return type annotation: `bool`
+
+ANN001 Missing type annotation for function argument `f`
+  --> example/showcase.py:82:30
+   |
+80 |             return f(self.value)
+81 |
+82 |         def is_err_and(self, f):
+   |                              ^
+83 |             return False
+   |
+
+ANN202 Missing return type annotation for private function `inspect`
+  --> example/showcase.py:85:13
+   |
+83 |             return False
+84 |
+85 |         def inspect(self, f):
+   |             ^^^^^^^
+86 |             f(self.value)
+87 |             return self
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `f`
+  --> example/showcase.py:85:27
+   |
+83 |             return False
+84 |
+85 |         def inspect(self, f):
+   |                           ^
+86 |             f(self.value)
+87 |             return self
+   |
+
+ANN202 Missing return type annotation for private function `inspect_err`
+  --> example/showcase.py:89:13
+   |
+87 |             return self
+88 |
+89 |         def inspect_err(self, f):
+   |             ^^^^^^^^^^^
+90 |             return self
+   |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `f`
+  --> example/showcase.py:89:31
+   |
+87 |             return self
+88 |
+89 |         def inspect_err(self, f):
+   |                               ^
+90 |             return self
+   |
+
+ANN202 Missing return type annotation for private function `iter`
+  --> example/showcase.py:92:13
+   |
+90 |             return self
+91 |
+92 |         def iter(self):
+   |             ^^^^
+93 |             yield self.value
+   |
+help: Add return type annotation
+
+ANN204 Missing return type annotation for special method `__iter__`
+  --> example/showcase.py:95:13
+   |
+93 |             yield self.value
+94 |
+95 |         def __iter__(self):
+   |             ^^^^^^^^
+96 |             return self.iter()
+   |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `flatten`
+   --> example/showcase.py:98:13
+    |
+ 96 |             return self.iter()
+ 97 |
+ 98 |         def flatten(self):
+    |             ^^^^^^^
+ 99 |             if isinstance(self.value, (Ok, Err)):
+100 |                 return self.value
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `into_ok`
+   --> example/showcase.py:103:13
+    |
+101 |             raise TypeError(f"flatten called on non-nested Result: {self.value}")
+102 |
+103 |         def into_ok(self):
+    |             ^^^^^^^
+104 |             return self.value
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `into_err`
+   --> example/showcase.py:106:13
+    |
+104 |             return self.value
+105 |
+106 |         def into_err(self):
+    |             ^^^^^^^^
+107 |             raise TypeError("Called into_err on Ok variant")
+    |
+help: Add return type annotation: `Never`
+
+ANN204 Missing return type annotation for special method `__repr__`
+   --> example/showcase.py:109:13
+    |
+107 |             raise TypeError("Called into_err on Ok variant")
+108 |
+109 |         def __repr__(self):
+    |             ^^^^^^^^
+110 |             return f"Ok({self.value!r})"
+    |
+help: Add return type annotation: `str`
+
+ANN202 Missing return type annotation for private function `unwrap`
+   --> example/showcase.py:122:13
+    |
+120 |             return True
+121 |
+122 |         def unwrap(self):
+    |             ^^^^^^
+123 |             raise ValueError(f"Called unwrap on Err: {self.error}")
+    |
+help: Add return type annotation: `Never`
+
+ANN202 Missing return type annotation for private function `unwrap_err`
+   --> example/showcase.py:125:13
+    |
+123 |             raise ValueError(f"Called unwrap on Err: {self.error}")
+124 |
+125 |         def unwrap_err(self):
+    |             ^^^^^^^^^^
+126 |             return self.error
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `unwrap_or`
+   --> example/showcase.py:128:13
+    |
+126 |             return self.error
+127 |
+128 |         def unwrap_or(self, default):
+    |             ^^^^^^^^^
+129 |             return default
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `default`
+   --> example/showcase.py:128:29
+    |
+126 |             return self.error
+127 |
+128 |         def unwrap_or(self, default):
+    |                             ^^^^^^^
+129 |             return default
+    |
+
+ANN202 Missing return type annotation for private function `unwrap_or_else`
+   --> example/showcase.py:131:13
+    |
+129 |             return default
+130 |
+131 |         def unwrap_or_else(self, op):
+    |             ^^^^^^^^^^^^^^
+132 |             return op(self.error)
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `op`
+   --> example/showcase.py:131:34
+    |
+129 |             return default
+130 |
+131 |         def unwrap_or_else(self, op):
+    |                                  ^^
+132 |             return op(self.error)
+    |
+
+ANN202 Missing return type annotation for private function `expect`
+   --> example/showcase.py:134:13
+    |
+132 |             return op(self.error)
+133 |
+134 |         def expect(self, msg):
+    |             ^^^^^^
+135 |             raise ValueError(f"{msg}: {self.error}")
+    |
+help: Add return type annotation: `Never`
+
+ANN001 Missing type annotation for function argument `msg`
+   --> example/showcase.py:134:26
+    |
+132 |             return op(self.error)
+133 |
+134 |         def expect(self, msg):
+    |                          ^^^
+135 |             raise ValueError(f"{msg}: {self.error}")
+    |
+
+ANN202 Missing return type annotation for private function `expect_err`
+   --> example/showcase.py:137:13
+    |
+135 |             raise ValueError(f"{msg}: {self.error}")
+136 |
+137 |         def expect_err(self, msg):
+    |             ^^^^^^^^^^
+138 |             return self.error
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `msg`
+   --> example/showcase.py:137:30
+    |
+135 |             raise ValueError(f"{msg}: {self.error}")
+136 |
+137 |         def expect_err(self, msg):
+    |                              ^^^
+138 |             return self.error
+    |
+
+ANN202 Missing return type annotation for private function `map`
+   --> example/showcase.py:140:13
+    |
+138 |             return self.error
+139 |
+140 |         def map(self, fn):
+    |             ^^^
+141 |             return self
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `fn`
+   --> example/showcase.py:140:23
+    |
+138 |             return self.error
+139 |
+140 |         def map(self, fn):
+    |                       ^^
+141 |             return self
+    |
+
+ANN202 Missing return type annotation for private function `map_err`
+   --> example/showcase.py:143:13
+    |
+141 |             return self
+142 |
+143 |         def map_err(self, op):
+    |             ^^^^^^^
+144 |             return Err(op(self.error))
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `op`
+   --> example/showcase.py:143:27
+    |
+141 |             return self
+142 |
+143 |         def map_err(self, op):
+    |                           ^^
+144 |             return Err(op(self.error))
+    |
+
+ANN202 Missing return type annotation for private function `map_or`
+   --> example/showcase.py:146:13
+    |
+144 |             return Err(op(self.error))
+145 |
+146 |         def map_or(self, default, f):
+    |             ^^^^^^
+147 |             return default
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `default`
+   --> example/showcase.py:146:26
+    |
+144 |             return Err(op(self.error))
+145 |
+146 |         def map_or(self, default, f):
+    |                          ^^^^^^^
+147 |             return default
+    |
+
+ANN001 Missing type annotation for function argument `f`
+   --> example/showcase.py:146:35
+    |
+144 |             return Err(op(self.error))
+145 |
+146 |         def map_or(self, default, f):
+    |                                   ^
+147 |             return default
+    |
+
+ANN202 Missing return type annotation for private function `map_or_else`
+   --> example/showcase.py:149:13
+    |
+147 |             return default
+148 |
+149 |         def map_or_else(self, default, f):
+    |             ^^^^^^^^^^^
+150 |             return default(self.error)
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `default`
+   --> example/showcase.py:149:31
+    |
+147 |             return default
+148 |
+149 |         def map_or_else(self, default, f):
+    |                               ^^^^^^^
+150 |             return default(self.error)
+    |
+
+ANN001 Missing type annotation for function argument `f`
+   --> example/showcase.py:149:40
+    |
+147 |             return default
+148 |
+149 |         def map_or_else(self, default, f):
+    |                                        ^
+150 |             return default(self.error)
+    |
+
+ANN202 Missing return type annotation for private function `map_or_default`
+   --> example/showcase.py:152:13
+    |
+150 |             return default(self.error)
+151 |
+152 |         def map_or_default(self, f, default):
+    |             ^^^^^^^^^^^^^^
+153 |             return default
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `f`
+   --> example/showcase.py:152:34
+    |
+150 |             return default(self.error)
+151 |
+152 |         def map_or_default(self, f, default):
+    |                                  ^
+153 |             return default
+    |
+
+ANN001 Missing type annotation for function argument `default`
+   --> example/showcase.py:152:37
+    |
+150 |             return default(self.error)
+151 |
+152 |         def map_or_default(self, f, default):
+    |                                     ^^^^^^^
+153 |             return default
+    |
+
+ANN202 Missing return type annotation for private function `and_then`
+   --> example/showcase.py:155:13
+    |
+153 |             return default
+154 |
+155 |         def and_then(self, fn):
+    |             ^^^^^^^^
+156 |             return self
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `fn`
+   --> example/showcase.py:155:28
+    |
+153 |             return default
+154 |
+155 |         def and_then(self, fn):
+    |                            ^^
+156 |             return self
+    |
+
+ANN202 Missing return type annotation for private function `bind`
+   --> example/showcase.py:158:13
+    |
+156 |             return self
+157 |
+158 |         def bind(self, fn):
+    |             ^^^^
+159 |             return self.and_then(fn)
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `fn`
+   --> example/showcase.py:158:24
+    |
+156 |             return self
+157 |
+158 |         def bind(self, fn):
+    |                        ^^
+159 |             return self.and_then(fn)
+    |
+
+ANN202 Missing return type annotation for private function `or_else`
+   --> example/showcase.py:161:13
+    |
+159 |             return self.and_then(fn)
+160 |
+161 |         def or_else(self, op):
+    |             ^^^^^^^
+162 |             return op(self.error)
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `op`
+   --> example/showcase.py:161:27
+    |
+159 |             return self.and_then(fn)
+160 |
+161 |         def or_else(self, op):
+    |                           ^^
+162 |             return op(self.error)
+    |
+
+ANN202 Missing return type annotation for private function `is_ok_and`
+   --> example/showcase.py:164:13
+    |
+162 |             return op(self.error)
+163 |
+164 |         def is_ok_and(self, f):
+    |             ^^^^^^^^^
+165 |             return False
+    |
+help: Add return type annotation: `bool`
+
+ANN001 Missing type annotation for function argument `f`
+   --> example/showcase.py:164:29
+    |
+162 |             return op(self.error)
+163 |
+164 |         def is_ok_and(self, f):
+    |                             ^
+165 |             return False
+    |
+
+ANN202 Missing return type annotation for private function `is_err_and`
+   --> example/showcase.py:167:13
+    |
+165 |             return False
+166 |
+167 |         def is_err_and(self, f):
+    |             ^^^^^^^^^^
+168 |             return f(self.error)
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `f`
+   --> example/showcase.py:167:30
+    |
+165 |             return False
+166 |
+167 |         def is_err_and(self, f):
+    |                              ^
+168 |             return f(self.error)
+    |
+
+ANN202 Missing return type annotation for private function `inspect`
+   --> example/showcase.py:170:13
+    |
+168 |             return f(self.error)
+169 |
+170 |         def inspect(self, f):
+    |             ^^^^^^^
+171 |             return self
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `f`
+   --> example/showcase.py:170:27
+    |
+168 |             return f(self.error)
+169 |
+170 |         def inspect(self, f):
+    |                           ^
+171 |             return self
+    |
+
+ANN202 Missing return type annotation for private function `inspect_err`
+   --> example/showcase.py:173:13
+    |
+171 |             return self
+172 |
+173 |         def inspect_err(self, f):
+    |             ^^^^^^^^^^^
+174 |             f(self.error)
+175 |             return self
+    |
+help: Add return type annotation
+
+ANN001 Missing type annotation for function argument `f`
+   --> example/showcase.py:173:31
+    |
+171 |             return self
+172 |
+173 |         def inspect_err(self, f):
+    |                               ^
+174 |             f(self.error)
+175 |             return self
+    |
+
+ANN202 Missing return type annotation for private function `iter`
+   --> example/showcase.py:177:13
+    |
+175 |             return self
+176 |
+177 |         def iter(self):
+    |             ^^^^
+178 |             return iter(())
+    |
+help: Add return type annotation
+
+ANN204 Missing return type annotation for special method `__iter__`
+   --> example/showcase.py:180:13
+    |
+178 |             return iter(())
+179 |
+180 |         def __iter__(self):
+    |             ^^^^^^^^
+181 |             return self.iter()
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `flatten`
+   --> example/showcase.py:183:13
+    |
+181 |             return self.iter()
+182 |
+183 |         def flatten(self):
+    |             ^^^^^^^
+184 |             return self
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `into_ok`
+   --> example/showcase.py:186:13
+    |
+184 |             return self
+185 |
+186 |         def into_ok(self):
+    |             ^^^^^^^
+187 |             raise TypeError(f"Called into_ok on Err: {self.error}")
+    |
+help: Add return type annotation: `Never`
+
+ANN202 Missing return type annotation for private function `into_err`
+   --> example/showcase.py:189:13
+    |
+187 |             raise TypeError(f"Called into_ok on Err: {self.error}")
+188 |
+189 |         def into_err(self):
+    |             ^^^^^^^^
+190 |             return self.error
+    |
+help: Add return type annotation
+
+ANN204 Missing return type annotation for special method `__repr__`
+   --> example/showcase.py:192:13
+    |
+190 |             return self.error
+191 |
+192 |         def __repr__(self):
+    |             ^^^^^^^^
+193 |             return f"Err({self.error!r})"
+    |
+help: Add return type annotation: `str`
+
+N806 Variable `Result` in function should be lowercase
+   --> example/showcase.py:195:5
+    |
+193 |             return f"Err({self.error!r})"
+194 |
+195 |     Result = Ok[T] | Err[E]
+    |     ^^^^^^
+196 |     return Err, Ok
+    |
+
+F841 Local variable `Result` is assigned to but never used
+   --> example/showcase.py:195:5
+    |
+193 |             return f"Err({self.error!r})"
+194 |
+195 |     Result = Ok[T] | Err[E]
+    |     ^^^^^^
+196 |     return Err, Ok
+    |
+help: Remove assignment to unused variable `Result`
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:200:5
+    |
+199 | @app.cell
+200 | def _(mo):
+    |     ^
+201 |     mo.md("""
+202 |     # `Result[T, E]` — Method Showcase
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:200:7
+    |
+199 | @app.cell
+200 | def _(mo):
+    |       ^^
+201 |     mo.md("""
+202 |     # `Result[T, E]` — Method Showcase
+    |
+
+E501 Line too long (104 > 99)
+   --> example/showcase.py:205:100
+    |
+204 |     A complete interactive reference for railway-oriented programming with the `Result` type.
+205 |     Each section demonstrates a method group with runnable examples drawn from maritime port operations.
+    |                                                                                                    ^^^^^
+206 |
+207 |     > **Two tracks, one pipeline.** `Ok[T]` carries a success value forward.
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:214:5
+    |
+213 | @app.cell
+214 | def _(mo):
+    |     ^
+215 |     mo.md("""
+216 |     ## 1 · Construction
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:214:7
+    |
+213 | @app.cell
+214 | def _(mo):
+    |       ^^
+215 |     mo.md("""
+216 |     ## 1 · Construction
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:224:5
+    |
+223 | @app.cell
+224 | def _():
+    |     ^
+225 |     return
+    |
+help: Add return type annotation: `None`
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:229:5
+    |
+228 | @app.cell
+229 | def _(Err, Ok, mo):
+    |     ^
+230 |     ok_val = Ok(42.5)
+231 |     err_val = Err("Value not found")
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:229:7
+    |
+228 | @app.cell
+229 | def _(Err, Ok, mo):
+    |       ^^^
+230 |     ok_val = Ok(42.5)
+231 |     err_val = Err("Value not found")
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:229:7
+    |
+228 | @app.cell
+229 | def _(Err, Ok, mo):
+    |       ^^^
+230 |     ok_val = Ok(42.5)
+231 |     err_val = Err("Value not found")
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:229:12
+    |
+228 | @app.cell
+229 | def _(Err, Ok, mo):
+    |            ^^
+230 |     ok_val = Ok(42.5)
+231 |     err_val = Err("Value not found")
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:229:12
+    |
+228 | @app.cell
+229 | def _(Err, Ok, mo):
+    |            ^^
+230 |     ok_val = Ok(42.5)
+231 |     err_val = Err("Value not found")
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:229:16
+    |
+228 | @app.cell
+229 | def _(Err, Ok, mo):
+    |                ^^
+230 |     ok_val = Ok(42.5)
+231 |     err_val = Err("Value not found")
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:245:5
+    |
+244 | @app.cell
+245 | def _(mo):
+    |     ^
+246 |     mo.md("""
+247 |     ## 2 · Checking State
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:245:7
+    |
+244 | @app.cell
+245 | def _(mo):
+    |       ^^
+246 |     mo.md("""
+247 |     ## 2 · Checking State
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:255:5
+    |
+254 | @app.cell
+255 | def _(Err, Ok, mo):
+    |     ^
+256 |     result_ok = Ok(150.0)
+257 |     result_err = Err("invalid container")
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:255:7
+    |
+254 | @app.cell
+255 | def _(Err, Ok, mo):
+    |       ^^^
+256 |     result_ok = Ok(150.0)
+257 |     result_err = Err("invalid container")
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:255:7
+    |
+254 | @app.cell
+255 | def _(Err, Ok, mo):
+    |       ^^^
+256 |     result_ok = Ok(150.0)
+257 |     result_err = Err("invalid container")
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:255:12
+    |
+254 | @app.cell
+255 | def _(Err, Ok, mo):
+    |            ^^
+256 |     result_ok = Ok(150.0)
+257 |     result_err = Err("invalid container")
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:255:12
+    |
+254 | @app.cell
+255 | def _(Err, Ok, mo):
+    |            ^^
+256 |     result_ok = Ok(150.0)
+257 |     result_err = Err("invalid container")
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:255:16
+    |
+254 | @app.cell
+255 | def _(Err, Ok, mo):
+    |                ^^
+256 |     result_ok = Ok(150.0)
+257 |     result_err = Err("invalid container")
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:281:5
+    |
+280 | @app.cell
+281 | def _(Err, Ok, mo):
+    |     ^
+282 |     r1 = Ok(150.0)
+283 |     r2 = Err("Record missing")
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:281:7
+    |
+280 | @app.cell
+281 | def _(Err, Ok, mo):
+    |       ^^^
+282 |     r1 = Ok(150.0)
+283 |     r2 = Err("Record missing")
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:281:7
+    |
+280 | @app.cell
+281 | def _(Err, Ok, mo):
+    |       ^^^
+282 |     r1 = Ok(150.0)
+283 |     r2 = Err("Record missing")
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:281:12
+    |
+280 | @app.cell
+281 | def _(Err, Ok, mo):
+    |            ^^
+282 |     r1 = Ok(150.0)
+283 |     r2 = Err("Record missing")
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:281:12
+    |
+280 | @app.cell
+281 | def _(Err, Ok, mo):
+    |            ^^
+282 |     r1 = Ok(150.0)
+283 |     r2 = Err("Record missing")
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:281:16
+    |
+280 | @app.cell
+281 | def _(Err, Ok, mo):
+    |                ^^
+282 |     r1 = Ok(150.0)
+283 |     r2 = Err("Record missing")
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:305:5
+    |
+304 | @app.cell
+305 | def _(mo):
+    |     ^
+306 |     mo.md("""
+307 |     ## 3 · Unwrapping
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:305:7
+    |
+304 | @app.cell
+305 | def _(mo):
+    |       ^^
+306 |     mo.md("""
+307 |     ## 3 · Unwrapping
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:315:5
+    |
+314 | @app.cell
+315 | def _(Err, Ok, mo):
+    |     ^
+316 |     # unwrap
+317 |     v1 = Ok(88.5).unwrap()  # 88.5
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:315:7
+    |
+314 | @app.cell
+315 | def _(Err, Ok, mo):
+    |       ^^^
+316 |     # unwrap
+317 |     v1 = Ok(88.5).unwrap()  # 88.5
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:315:7
+    |
+314 | @app.cell
+315 | def _(Err, Ok, mo):
+    |       ^^^
+316 |     # unwrap
+317 |     v1 = Ok(88.5).unwrap()  # 88.5
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:315:12
+    |
+314 | @app.cell
+315 | def _(Err, Ok, mo):
+    |            ^^
+316 |     # unwrap
+317 |     v1 = Ok(88.5).unwrap()  # 88.5
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:315:12
+    |
+314 | @app.cell
+315 | def _(Err, Ok, mo):
+    |            ^^
+316 |     # unwrap
+317 |     v1 = Ok(88.5).unwrap()  # 88.5
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:315:16
+    |
+314 | @app.cell
+315 | def _(Err, Ok, mo):
+    |                ^^
+316 |     # unwrap
+317 |     v1 = Ok(88.5).unwrap()  # 88.5
+    |
+
+E501 Line too long (129 > 99)
+   --> example/showcase.py:347:100
+    |
+345 |     | `expect_err(msg)` | **raises** with `msg` | returns error |
+346 |
+347 |     > Prefer `unwrap_or` / `unwrap_or_else` in production; reserve `unwrap` / `expect` for tests or truly impossible error paths.
+    |                                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+348 |     """)
+349 |     return
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:353:5
+    |
+352 | @app.cell
+353 | def _(mo):
+    |     ^
+354 |     mo.md("""
+355 |     ## 4 · Mapping
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:353:7
+    |
+352 | @app.cell
+353 | def _(mo):
+    |       ^^
+354 |     mo.md("""
+355 |     ## 4 · Mapping
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:363:5
+    |
+362 | @app.cell
+363 | def _(Err, Ok, mo):
+    |     ^
+364 |     # map: transform Ok value, pass Err through
+365 |     r_map_ok = Ok(12.5).map(lambda t: round(t * 1.1, 2))  # apply 10% surcharge
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:363:7
+    |
+362 | @app.cell
+363 | def _(Err, Ok, mo):
+    |       ^^^
+364 |     # map: transform Ok value, pass Err through
+365 |     r_map_ok = Ok(12.5).map(lambda t: round(t * 1.1, 2))  # apply 10% surcharge
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:363:7
+    |
+362 | @app.cell
+363 | def _(Err, Ok, mo):
+    |       ^^^
+364 |     # map: transform Ok value, pass Err through
+365 |     r_map_ok = Ok(12.5).map(lambda t: round(t * 1.1, 2))  # apply 10% surcharge
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:363:12
+    |
+362 | @app.cell
+363 | def _(Err, Ok, mo):
+    |            ^^
+364 |     # map: transform Ok value, pass Err through
+365 |     r_map_ok = Ok(12.5).map(lambda t: round(t * 1.1, 2))  # apply 10% surcharge
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:363:12
+    |
+362 | @app.cell
+363 | def _(Err, Ok, mo):
+    |            ^^
+364 |     # map: transform Ok value, pass Err through
+365 |     r_map_ok = Ok(12.5).map(lambda t: round(t * 1.1, 2))  # apply 10% surcharge
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:363:16
+    |
+362 | @app.cell
+363 | def _(Err, Ok, mo):
+    |                ^^
+364 |     # map: transform Ok value, pass Err through
+365 |     r_map_ok = Ok(12.5).map(lambda t: round(t * 1.1, 2))  # apply 10% surcharge
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:382:5
+    |
+381 | @app.cell
+382 | def _(Err, Ok, mo):
+    |     ^
+383 |     # map_err: transform Err, leave Ok alone
+384 |     r_me_ok = Ok(99.0).map_err(str.upper)
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:382:7
+    |
+381 | @app.cell
+382 | def _(Err, Ok, mo):
+    |       ^^^
+383 |     # map_err: transform Err, leave Ok alone
+384 |     r_me_ok = Ok(99.0).map_err(str.upper)
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:382:7
+    |
+381 | @app.cell
+382 | def _(Err, Ok, mo):
+    |       ^^^
+383 |     # map_err: transform Err, leave Ok alone
+384 |     r_me_ok = Ok(99.0).map_err(str.upper)
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:382:12
+    |
+381 | @app.cell
+382 | def _(Err, Ok, mo):
+    |            ^^
+383 |     # map_err: transform Err, leave Ok alone
+384 |     r_me_ok = Ok(99.0).map_err(str.upper)
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:382:12
+    |
+381 | @app.cell
+382 | def _(Err, Ok, mo):
+    |            ^^
+383 |     # map_err: transform Err, leave Ok alone
+384 |     r_me_ok = Ok(99.0).map_err(str.upper)
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:382:16
+    |
+381 | @app.cell
+382 | def _(Err, Ok, mo):
+    |                ^^
+383 |     # map_err: transform Err, leave Ok alone
+384 |     r_me_ok = Ok(99.0).map_err(str.upper)
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:427:5
+    |
+426 | @app.cell
+427 | def _(mo):
+    |     ^
+428 |     mo.md("""
+429 |     ## 5 · Chaining — `bind` / `and_then`
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:427:7
+    |
+426 | @app.cell
+427 | def _(mo):
+    |       ^^
+428 |     mo.md("""
+429 |     ## 5 · Chaining — `bind` / `and_then`
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:437:5
+    |
+436 | @app.cell
+437 | def _(Err, Ok, mo):
+    |     ^
+438 |     def parse_currency(raw: str):
+439 |         try:
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:437:7
+    |
+436 | @app.cell
+437 | def _(Err, Ok, mo):
+    |       ^^^
+438 |     def parse_currency(raw: str):
+439 |         try:
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:437:7
+    |
+436 | @app.cell
+437 | def _(Err, Ok, mo):
+    |       ^^^
+438 |     def parse_currency(raw: str):
+439 |         try:
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:437:12
+    |
+436 | @app.cell
+437 | def _(Err, Ok, mo):
+    |            ^^
+438 |     def parse_currency(raw: str):
+439 |         try:
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:437:12
+    |
+436 | @app.cell
+437 | def _(Err, Ok, mo):
+    |            ^^
+438 |     def parse_currency(raw: str):
+439 |         try:
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:437:16
+    |
+436 | @app.cell
+437 | def _(Err, Ok, mo):
+    |                ^^
+438 |     def parse_currency(raw: str):
+439 |         try:
+    |
+
+ANN202 Missing return type annotation for private function `parse_currency`
+   --> example/showcase.py:438:9
+    |
+436 | @app.cell
+437 | def _(Err, Ok, mo):
+438 |     def parse_currency(raw: str):
+    |         ^^^^^^^^^^^^^^
+439 |         try:
+440 |             t = float(raw)
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `apply_rate`
+   --> example/showcase.py:445:9
+    |
+443 |             return Err(f"cannot parse '{raw}' as float")
+444 |
+445 |     def apply_rate(value: float):
+    |         ^^^^^^^^^^
+446 |         RATE = 18.50
+447 |         return Ok(round(value * RATE, 2))
+    |
+help: Add return type annotation
+
+N806 Variable `RATE` in function should be lowercase
+   --> example/showcase.py:446:9
+    |
+445 |     def apply_rate(value: float):
+446 |         RATE = 18.50
+    |         ^^^^
+447 |         return Ok(round(value * RATE, 2))
+    |
+
+ANN202 Missing return type annotation for private function `check_invoice_limit`
+   --> example/showcase.py:449:9
+    |
+447 |         return Ok(round(value * RATE, 2))
+448 |
+449 |     def check_invoice_limit(amount: float):
+    |         ^^^^^^^^^^^^^^^^^^^
+450 |         LIMIT = 5_000.0
+451 |         return Ok(amount) if amount <= LIMIT else Err(f"invoice ${amount} exceeds limit ${LIMIT}")
+    |
+help: Add return type annotation
+
+N806 Variable `LIMIT` in function should be lowercase
+   --> example/showcase.py:450:9
+    |
+449 |     def check_invoice_limit(amount: float):
+450 |         LIMIT = 5_000.0
+    |         ^^^^^
+451 |         return Ok(amount) if amount <= LIMIT else Err(f"invoice ${amount} exceeds limit ${LIMIT}")
+    |
+
+E501 Line too long (175 > 99)
+   --> example/showcase.py:477:100
+    |
+475 | …
+476 | …
+477 | …can fail** (returns `Result`), use `and_then`. If it's a plain transform that **can't fail**, use `map`.
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+478 | …
+479 | …
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:483:5
+    |
+482 | @app.cell
+483 | def _(mo):
+    |     ^
+484 |     mo.md("""
+485 |     ## 6 · Error Recovery — `or_else`
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:483:7
+    |
+482 | @app.cell
+483 | def _(mo):
+    |       ^^
+484 |     mo.md("""
+485 |     ## 6 · Error Recovery — `or_else`
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:493:5
+    |
+492 | @app.cell
+493 | def _(Err, Ok, mo):
+    |     ^
+494 |     KNOWN_SERVICES = {"transportation", "booking", "baggage_handling"}
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:493:7
+    |
+492 | @app.cell
+493 | def _(Err, Ok, mo):
+    |       ^^^
+494 |     KNOWN_SERVICES = {"transportation", "booking", "baggage_handling"}
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:493:7
+    |
+492 | @app.cell
+493 | def _(Err, Ok, mo):
+    |       ^^^
+494 |     KNOWN_SERVICES = {"transportation", "booking", "baggage_handling"}
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:493:12
+    |
+492 | @app.cell
+493 | def _(Err, Ok, mo):
+    |            ^^
+494 |     KNOWN_SERVICES = {"transportation", "booking", "baggage_handling"}
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:493:12
+    |
+492 | @app.cell
+493 | def _(Err, Ok, mo):
+    |            ^^
+494 |     KNOWN_SERVICES = {"transportation", "booking", "baggage_handling"}
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:493:16
+    |
+492 | @app.cell
+493 | def _(Err, Ok, mo):
+    |                ^^
+494 |     KNOWN_SERVICES = {"transportation", "booking", "baggage_handling"}
+    |
+
+N806 Variable `KNOWN_SERVICES` in function should be lowercase
+   --> example/showcase.py:494:5
+    |
+492 | @app.cell
+493 | def _(Err, Ok, mo):
+494 |     KNOWN_SERVICES = {"transportation", "booking", "baggage_handling"}
+    |     ^^^^^^^^^^^^^^
+495 |
+496 |     def strict_lookup(service: str):
+    |
+
+ANN202 Missing return type annotation for private function `strict_lookup`
+   --> example/showcase.py:496:9
+    |
+494 |     KNOWN_SERVICES = {"transportation", "booking", "baggage_handling"}
+495 |
+496 |     def strict_lookup(service: str):
+    |         ^^^^^^^^^^^^^
+497 |         return Ok(service) if service in KNOWN_SERVICES else Err(f"unknown: '{service}'")
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `fallback_to_misc`
+   --> example/showcase.py:499:9
+    |
+497 |         return Ok(service) if service in KNOWN_SERVICES else Err(f"unknown: '{service}'")
+498 |
+499 |     def fallback_to_misc(err: str):
+    |         ^^^^^^^^^^^^^^^^
+500 |         return Ok("miscellaneous")  # recover by substituting a default
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `log_and_fail`
+   --> example/showcase.py:502:9
+    |
+500 |         return Ok("miscellaneous")  # recover by substituting a default
+501 |
+502 |     def log_and_fail(err: str):
+    |         ^^^^^^^^^^^^
+503 |         return Err(f"[logged] {err}")  # stay on the Err track but enrich it
+    |
+help: Add return type annotation
+
+E501 Line too long (108 > 99)
+   --> example/showcase.py:513:100
+    |
+511 |     strict_lookup("booking").or_else(fallback_to_misc)  # → {r_recovered}  (Ok, no recovery needed)
+512 |     strict_lookup("transportation").or_else(fallback_to_misc)     # → {r_needed}      (recovered)
+513 |     strict_lookup("transportation").or_else(log_and_fail)         # → {r_enriched!r}  (stayed Err, enriched)
+    |                                                                                                    ^^^^^^^^^
+514 |     ```
+    |
+
+E501 Line too long (219 > 99)
+   --> example/showcase.py:516:100
+    |
+514 | …
+515 | …
+516 | …ives the error value and must return a `Result` — you can either recover to `Ok` or return a new (possibly transformed) `Err`.
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+517 | …
+518 | …
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:528:5
+    |
+527 | @app.cell
+528 | def _(mo):
+    |     ^
+529 |     mo.md("""
+530 |     ## 7 · Side-Effects — `inspect` / `inspect_err`
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:528:7
+    |
+527 | @app.cell
+528 | def _(mo):
+    |       ^^
+529 |     mo.md("""
+530 |     ## 7 · Side-Effects — `inspect` / `inspect_err`
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:538:5
+    |
+537 | @app.cell
+538 | def _(Err, Ok, mo):
+    |     ^
+539 |     log = []
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:538:7
+    |
+537 | @app.cell
+538 | def _(Err, Ok, mo):
+    |       ^^^
+539 |     log = []
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:538:7
+    |
+537 | @app.cell
+538 | def _(Err, Ok, mo):
+    |       ^^^
+539 |     log = []
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:538:12
+    |
+537 | @app.cell
+538 | def _(Err, Ok, mo):
+    |            ^^
+539 |     log = []
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:538:12
+    |
+537 | @app.cell
+538 | def _(Err, Ok, mo):
+    |            ^^
+539 |     log = []
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:538:16
+    |
+537 | @app.cell
+538 | def _(Err, Ok, mo):
+    |                ^^
+539 |     log = []
+    |
+
+E501 Line too long (181 > 99)
+   --> example/showcase.py:575:100
+    |
+573 | …
+574 | …
+575 | …they are purely for side-effects like logging, metrics, or debugging. They never alter the track you're on.
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+576 | …
+577 | …
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:581:5
+    |
+580 | @app.cell
+581 | def _(mo):
+    |     ^
+582 |     mo.md("""
+583 |     ## 8 · `flatten`
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:581:7
+    |
+580 | @app.cell
+581 | def _(mo):
+    |       ^^
+582 |     mo.md("""
+583 |     ## 8 · `flatten`
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:591:5
+    |
+590 | @app.cell
+591 | def _(Err, Ok, mo):
+    |     ^
+592 |     nested_ok = Ok(Ok(42.5))
+593 |     nested_err = Ok(Err("inner error"))
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:591:7
+    |
+590 | @app.cell
+591 | def _(Err, Ok, mo):
+    |       ^^^
+592 |     nested_ok = Ok(Ok(42.5))
+593 |     nested_err = Ok(Err("inner error"))
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:591:7
+    |
+590 | @app.cell
+591 | def _(Err, Ok, mo):
+    |       ^^^
+592 |     nested_ok = Ok(Ok(42.5))
+593 |     nested_err = Ok(Err("inner error"))
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:591:12
+    |
+590 | @app.cell
+591 | def _(Err, Ok, mo):
+    |            ^^
+592 |     nested_ok = Ok(Ok(42.5))
+593 |     nested_err = Ok(Err("inner error"))
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:591:12
+    |
+590 | @app.cell
+591 | def _(Err, Ok, mo):
+    |            ^^
+592 |     nested_ok = Ok(Ok(42.5))
+593 |     nested_err = Ok(Err("inner error"))
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:591:16
+    |
+590 | @app.cell
+591 | def _(Err, Ok, mo):
+    |                ^^
+592 |     nested_ok = Ok(Ok(42.5))
+593 |     nested_err = Ok(Err("inner error"))
+    |
+
+E501 Line too long (231 > 99)
+   --> example/showcase.py:607:100
+    |
+605 | …
+606 | …
+607 | …nstead of `bind`). The result is `Ok(Result(...))` — one level too deep. You can either switch to `bind`, or call `.flatten()` afterward:
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+608 | …
+609 | …
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:619:5
+    |
+618 | @app.cell
+619 | def _(mo):
+    |     ^
+620 |     mo.md("""
+621 |     ## 9 · `iter` / `__iter__`
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:619:7
+    |
+618 | @app.cell
+619 | def _(mo):
+    |       ^^
+620 |     mo.md("""
+621 |     ## 9 · `iter` / `__iter__`
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:629:5
+    |
+628 | @app.cell
+629 | def _(Err, Ok, mo):
+    |     ^
+630 |     iter_results = [Ok(12.5), Err("bad"), Ok(33.0), Err("null"), Ok(8.75)]
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:629:7
+    |
+628 | @app.cell
+629 | def _(Err, Ok, mo):
+    |       ^^^
+630 |     iter_results = [Ok(12.5), Err("bad"), Ok(33.0), Err("null"), Ok(8.75)]
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:629:7
+    |
+628 | @app.cell
+629 | def _(Err, Ok, mo):
+    |       ^^^
+630 |     iter_results = [Ok(12.5), Err("bad"), Ok(33.0), Err("null"), Ok(8.75)]
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:629:12
+    |
+628 | @app.cell
+629 | def _(Err, Ok, mo):
+    |            ^^
+630 |     iter_results = [Ok(12.5), Err("bad"), Ok(33.0), Err("null"), Ok(8.75)]
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:629:12
+    |
+628 | @app.cell
+629 | def _(Err, Ok, mo):
+    |            ^^
+630 |     iter_results = [Ok(12.5), Err("bad"), Ok(33.0), Err("null"), Ok(8.75)]
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:629:16
+    |
+628 | @app.cell
+629 | def _(Err, Ok, mo):
+    |                ^^
+630 |     iter_results = [Ok(12.5), Err("bad"), Ok(33.0), Err("null"), Ok(8.75)]
+    |
+
+E501 Line too long (205 > 99)
+   --> example/showcase.py:650:100
+    |
+648 | …
+649 | …
+650 | …es it trivial to filter a list of `Result` values down to just the successes without any explicit `if r.is_ok()` guard.
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+651 | …
+652 | …
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:656:5
+    |
+655 | @app.cell
+656 | def _(mo):
+    |     ^
+657 |     mo.md("""
+658 |     ## 10 · `into_ok` / `into_err`
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:656:7
+    |
+655 | @app.cell
+656 | def _(mo):
+    |       ^^
+657 |     mo.md("""
+658 |     ## 10 · `into_ok` / `into_err`
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:666:5
+    |
+665 | @app.cell
+666 | def _(Err, Ok, mo):
+    |     ^
+667 |     # into_ok: safe only when you KNOW it's Ok (use at the boundary where Ok is guaranteed)
+668 |     v_ok = Ok("Books").into_ok()
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:666:7
+    |
+665 | @app.cell
+666 | def _(Err, Ok, mo):
+    |       ^^^
+667 |     # into_ok: safe only when you KNOW it's Ok (use at the boundary where Ok is guaranteed)
+668 |     v_ok = Ok("Books").into_ok()
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:666:7
+    |
+665 | @app.cell
+666 | def _(Err, Ok, mo):
+    |       ^^^
+667 |     # into_ok: safe only when you KNOW it's Ok (use at the boundary where Ok is guaranteed)
+668 |     v_ok = Ok("Books").into_ok()
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:666:12
+    |
+665 | @app.cell
+666 | def _(Err, Ok, mo):
+    |            ^^
+667 |     # into_ok: safe only when you KNOW it's Ok (use at the boundary where Ok is guaranteed)
+668 |     v_ok = Ok("Books").into_ok()
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:666:12
+    |
+665 | @app.cell
+666 | def _(Err, Ok, mo):
+    |            ^^
+667 |     # into_ok: safe only when you KNOW it's Ok (use at the boundary where Ok is guaranteed)
+668 |     v_ok = Ok("Books").into_ok()
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:666:16
+    |
+665 | @app.cell
+666 | def _(Err, Ok, mo):
+    |                ^^
+667 |     # into_ok: safe only when you KNOW it's Ok (use at the boundary where Ok is guaranteed)
+668 |     v_ok = Ok("Books").into_ok()
+    |
+
+E501 Line too long (185 > 99)
+   --> example/showcase.py:679:100
+    |
+677 | …
+678 | …
+679 | … raises `TypeError` (not `ValueError`), signalling a programming contract violation rather than a data error.
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+680 | …
+681 | …e hatch, mirroring Rust's `Result::into_ok` which is only callable when `E = Infallible`. Use them at system boundaries where you've…
+    |
+
+E501 Line too long (282 > 99)
+   --> example/showcase.py:681:100
+    |
+679 | …` (not `ValueError`), signalling a programming contract violation rather than a data error.
+680 | …
+681 | … Rust's `Result::into_ok` which is only callable when `E = Infallible`. Use them at system boundaries where you've already filtered/validated and want clean extraction without `.unwrap()`.
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+682 | …
+683 | …
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:687:5
+    |
+686 | @app.cell
+687 | def _(mo):
+    |     ^
+688 |     mo.md("""
+689 |     ## 11 · Full Pipeline — Putting it all together
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:687:7
+    |
+686 | @app.cell
+687 | def _(mo):
+    |       ^^
+688 |     mo.md("""
+689 |     ## 11 · Full Pipeline — Putting it all together
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:695:5
+    |
+694 | @app.cell
+695 | def _(Err, Ok, mo):
+    |     ^
+696 |     VALID_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
+697 |     RATES = {"stevedoring": 18.50, "cold_storage": 24.00, "container_handling": 12.75}
+    |
+help: Add return type annotation: `None`
+
+N803 Argument name `Err` should be lowercase
+   --> example/showcase.py:695:7
+    |
+694 | @app.cell
+695 | def _(Err, Ok, mo):
+    |       ^^^
+696 |     VALID_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
+697 |     RATES = {"stevedoring": 18.50, "cold_storage": 24.00, "container_handling": 12.75}
+    |
+
+ANN001 Missing type annotation for function argument `Err`
+   --> example/showcase.py:695:7
+    |
+694 | @app.cell
+695 | def _(Err, Ok, mo):
+    |       ^^^
+696 |     VALID_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
+697 |     RATES = {"stevedoring": 18.50, "cold_storage": 24.00, "container_handling": 12.75}
+    |
+
+N803 Argument name `Ok` should be lowercase
+   --> example/showcase.py:695:12
+    |
+694 | @app.cell
+695 | def _(Err, Ok, mo):
+    |            ^^
+696 |     VALID_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
+697 |     RATES = {"stevedoring": 18.50, "cold_storage": 24.00, "container_handling": 12.75}
+    |
+
+ANN001 Missing type annotation for function argument `Ok`
+   --> example/showcase.py:695:12
+    |
+694 | @app.cell
+695 | def _(Err, Ok, mo):
+    |            ^^
+696 |     VALID_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
+697 |     RATES = {"stevedoring": 18.50, "cold_storage": 24.00, "container_handling": 12.75}
+    |
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:695:16
+    |
+694 | @app.cell
+695 | def _(Err, Ok, mo):
+    |                ^^
+696 |     VALID_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
+697 |     RATES = {"stevedoring": 18.50, "cold_storage": 24.00, "container_handling": 12.75}
+    |
+
+N806 Variable `VALID_SERVICES` in function should be lowercase
+   --> example/showcase.py:696:5
+    |
+694 | @app.cell
+695 | def _(Err, Ok, mo):
+696 |     VALID_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
+    |     ^^^^^^^^^^^^^^
+697 |     RATES = {"stevedoring": 18.50, "cold_storage": 24.00, "container_handling": 12.75}
+698 |     MAX_INVOICE = 10_000.0
+    |
+
+N806 Variable `RATES` in function should be lowercase
+   --> example/showcase.py:697:5
+    |
+695 | def _(Err, Ok, mo):
+696 |     VALID_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
+697 |     RATES = {"stevedoring": 18.50, "cold_storage": 24.00, "container_handling": 12.75}
+    |     ^^^^^
+698 |     MAX_INVOICE = 10_000.0
+    |
+
+N806 Variable `MAX_INVOICE` in function should be lowercase
+   --> example/showcase.py:698:5
+    |
+696 |     VALID_SERVICES = {"stevedoring", "cold_storage", "container_handling"}
+697 |     RATES = {"stevedoring": 18.50, "cold_storage": 24.00, "container_handling": 12.75}
+698 |     MAX_INVOICE = 10_000.0
+    |     ^^^^^^^^^^^
+699 |
+700 |     def validate_container(container: str):
+    |
+
+ANN202 Missing return type annotation for private function `validate_container`
+   --> example/showcase.py:700:9
+    |
+698 |     MAX_INVOICE = 10_000.0
+699 |
+700 |     def validate_container(container: str):
+    |         ^^^^^^^^^^^^^^^^^^
+701 |         import re
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `validate_service`
+   --> example/showcase.py:709:9
+    |
+707 |         )
+708 |
+709 |     def validate_service(service: str):
+    |         ^^^^^^^^^^^^^^^^
+710 |         return Ok(service) if service in VALID_SERVICES else Err(f"unknown service: '{service}'")
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `calculate_invoice`
+   --> example/showcase.py:712:9
+    |
+710 |         return Ok(service) if service in VALID_SERVICES else Err(f"unknown service: '{service}'")
+711 |
+712 |     def calculate_invoice(data: dict):
+    |         ^^^^^^^^^^^^^^^^^
+713 |         service = data["service"]
+714 |         tonnes = data["tonnes"]
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `check_limit`
+   --> example/showcase.py:727:9
+    |
+725 |         )
+726 |
+727 |     def check_limit(invoice: dict):
+    |         ^^^^^^^^^^^
+728 |         return (
+729 |             Ok(invoice)
+    |
+help: Add return type annotation
+
+ANN202 Missing return type annotation for private function `process_row`
+   --> example/showcase.py:734:9
+    |
+732 |         )
+733 |
+734 |     def process_row(container: str, service: str, tonnes: float):
+    |         ^^^^^^^^^^^
+735 |         return (
+736 |             validate_container(container)
+    |
+help: Add return type annotation
+
+E501 Line too long (107 > 99)
+   --> example/showcase.py:761:100
+    |
+760 |     success_lines = "\n".join(
+761 |         f"  ✓ {inv['container']:15s} {inv['service']:22s} {inv['tonnes']:6.1f}t  → ${inv['amount']:>8,.2f}"
+    |                                                                                                    ^^^^^^^^
+762 |         for inv in successes
+763 |     )
+    |
+
+E501 Line too long (262 > 99)
+   --> example/showcase.py:792:100
+    |
+790 | …
+791 | …
+792 | …ers. The `Result` type wires them together, handles all branching, and surfaces errors with full context — no `try/except` blocks, no `None` checks, no silent failures.
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+793 | …
+794 | …
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:798:5
+    |
+797 | @app.cell
+798 | def _(mo):
+    |     ^
+799 |     mo.md("""
+800 |     ## Quick Reference
+    |
+help: Add return type annotation: `None`
+
+ANN001 Missing type annotation for function argument `mo`
+   --> example/showcase.py:798:7
+    |
+797 | @app.cell
+798 | def _(mo):
+    |       ^^
+799 |     mo.md("""
+800 |     ## Quick Reference
+    |
+
+ANN202 Missing return type annotation for private function `_`
+   --> example/showcase.py:831:5
+    |
+830 | @app.cell
+831 | def _():
+    |     ^
+832 |     import marimo as mo
+    |
+help: Add return type annotation
+
+Found 227 errors.
+[*] 2 fixable with the `--fix` option (40 hidden fixes can be enabled with the `--unsafe-fixes` option).

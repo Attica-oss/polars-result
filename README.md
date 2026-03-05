@@ -149,8 +149,10 @@ Both `Ok[T]` and `Err[E]` implement the full interface below. Methods that opera
 | `map_or(default, f)` | both | `f(value)` if `Ok`, else `default` — returns plain value |
 | `map_or_else(default_f, f)` | both | `f(value)` if `Ok`, else `default_f(error)` — returns plain value |
 | `and_then(f: T → Result)` | `Ok` | calls `f(value)`; passes `Err` through.  |
+| `bind(f: T → Result)` | `Ok` | alias for `and_then` — standard FP/monadic name |
 | `or_else(f: E → Result)` | `Err` | calls `f(error)`; passes `Ok` through |
 | `flatten()` | `Ok(Result)` | collapses `Ok(Ok(v))` → `Ok(v)`, `Ok(Err(e))` → `Err(e)` |
+| `map_or_default(f, default)` | both | `f(value)` if `Ok`, else `default` — argument order is `f` first |
 
 > **`map` vs `and_then`** — if the function you are chaining can fail (returns `Result`), use `and_then`.
 > If it is a plain transform that cannot fail, use `map`.
@@ -176,6 +178,20 @@ total     = sum(v for r in results for v in r)  # 54.25
 
 ---
 
+### Option Methods
+
+`Some[T]` and `Nothing` mirror the Result API for optional values.
+
+| Method | Description |
+|---|---|
+| `is_some() → bool` | `True` if Some |
+| `is_none() → bool` | `True` if Nothing |
+| `unwrap()` | returns value or raises |
+| `map(f)` | transforms value if Some |
+| `and_then(f)` | chains Option-returning functions |
+| `ok_or(err)` | converts `Some(v)` → `Ok(v)`, `Nothing` → `Err(err)` |
+| `ok_or_else(f)` | same but computes error lazily |
+
 ### Polars Operations
 
 All operations return `Result[T, PolarsError]` and never raise.
@@ -188,6 +204,9 @@ from polars_result import scan_csv, scan_parquet
 
 result      = read_csv("data.csv", separator=";")   # Result[DataFrame, PolarsError]
 lazy_result = scan_parquet("data.parquet")           # Result[LazyFrame, PolarsError]
+result = read_excel("data.xlsx")           # Result[DataFrame, PolarsError]
+result = read_excel("data.xlsx", sheet_name="Sheet1")           # Result[DataFrame, PolarsError]
+result = from_records([{"a": 1}, {"a": 2}])
 ```
 
 **Constructing**
@@ -391,7 +410,7 @@ uv run pytest                                                # run tests
 uv run pytest --cov=src/polars_result --cov-report=html     # with coverage
 uv run ruff check src/ tests/                                # lint
 uv run ruff format src/ tests/                               # format
-uv run pyright                                               # type check
+uv run ty check src/                                              # type check
 ```
 
 ## Contributing

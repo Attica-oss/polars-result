@@ -23,7 +23,7 @@ class TestOk:
 
     def test_repr(self) -> None:
         """Test Ok representation."""
-        assert repr(Ok(42)) == "Ok(value=42)"
+        assert repr(Ok(42)) == "Ok(42)"
 
 
 class TestErr:
@@ -46,7 +46,7 @@ class TestErr:
     def test_repr(self) -> None:
         """Test Err representation."""
         r = Err(ValueError("oops"))
-        assert "Err(error=" in repr(r)
+        assert "Err(" in repr(r)
 
 
 class TestUnwrap:

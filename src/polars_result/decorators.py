@@ -11,7 +11,7 @@ from .result import Err, Ok, Result
 
 
 @overload
-def resultify[**P, R](func: Callable[P, R]) -> Callable[P, Result[R, Exception]]: ...
+def resultify[**P, R](func: Callable[P, R]) -> Callable[P, Result[R, PipelineError]]: ...
 
 
 @overload
@@ -67,7 +67,7 @@ def resultify[**P, R](
                     return cast(Result[R, Exception], value)
 
                 # Wrap the value in Ok (handles None as well)
-                return Ok(value)
+                return cast(Result[R, Exception], Ok(value))
 
             except catch as e:
                 return Err(error_type(f"{fn_name} failed: {e}"))

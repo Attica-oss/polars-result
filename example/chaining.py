@@ -5,7 +5,7 @@ from polars_result import Err, Ok, PolarsResultError, Result, ValidationError
 # ── Helper functions ─────────────────────────────────────────────────────────
 
 
-def parse_int(raw: str) -> Result[int, Exception]:
+def parse_int(raw: str) -> Result[int, ValidationError]:
     """Parse a string to int, returning Result instead of raising."""
     try:
         return Ok(int(raw))
@@ -13,7 +13,7 @@ def parse_int(raw: str) -> Result[int, Exception]:
         return Err(ValidationError(f"Cannot parse '{raw}': {e}"))
 
 
-def validate_positive(n: int) -> Result[int, Exception]:
+def validate_positive(n: int) -> Result[int, ValidationError]:
     """Ensure value is positive."""
     if n > 0:
         return Ok(n)

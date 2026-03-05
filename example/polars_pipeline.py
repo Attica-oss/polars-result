@@ -2,7 +2,7 @@
 
 import polars as pl
 
-from polars_result import Err, Ok, PolarsResultError, Result, ValidationError
+from polars_result import Err, Ok, PolarsResultError, Result
 
 # ── Simulate raw data (e.g. from Google Sheets) ─────────────────────────────
 
@@ -17,7 +17,7 @@ raw_data = {
 # ── Pipeline steps as Result-returning functions ─────────────────────────────
 
 
-def load_data(data: dict) -> Result[pl.DataFrame, Exception]:
+def load_data(data: dict) -> Result[pl.DataFrame, PolarsResultError]:
     """Wrap raw data into a DataFrame."""
     try:
         df = pl.DataFrame(data)
@@ -26,7 +26,7 @@ def load_data(data: dict) -> Result[pl.DataFrame, Exception]:
         return Err(PolarsResultError(f"Failed to load data: {e}"))
 
 
-def validate_containers(df: pl.DataFrame) -> Result[pl.DataFrame, Exception]:
+def validate_containers(df: pl.DataFrame) -> Ok[pl.DataFrame]:
     """Flag rows with invalid container numbers (must be 11 alphanumeric chars)."""
     validated = df.with_columns(
         pl.col("container").str.contains(r"^[A-Z]{4}\d{7}$").alias("valid_container")
@@ -42,13 +42,13 @@ def fill_missing_tonnes(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(pl.col("tonnes").fill_null(0.0))
 
 
-def validate_services(df: pl.DataFrame) -> Result[pl.DataFrame, Exception]:
+def validate_services(df: pl.DataFrame) -> Result[pl.DataFrame, PolarsResultError]:
     """Ensure all services are known."""
     known = {"stevedoring", "cold_storage", "container_handling"}
     actual = set(df["service"].unique().to_list())
     unknown = actual - known
     if unknown:
-        return Err(ValidationError(f"Unknown service(s): {unknown}"))
+        return Err(PolarsResultError(f"Unknown service(s): {unknown}"))
     return Ok(df)
 
 

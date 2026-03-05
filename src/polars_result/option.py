@@ -1,11 +1,12 @@
 """Python implementation of the Option type."""
 
+from __future__ import annotations
+
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
-from typing import TypeVar
+from typing import Never
 
-T = TypeVar("T")
-U = TypeVar("U")
+from .result import Result
 
 
 @dataclass
@@ -38,31 +39,31 @@ class Some[T]:
         """Returns the contained value or raises with a custom message."""
         return self.value
 
-    def map(self, f: Callable[[T], U]) -> "Option[U]":
+    def map[U](self, f: Callable[[T], U]) -> Option[U]:
         """Maps an Option[T] to Option[U] by applying a function to the contained value."""
         return Some(f(self.value))
 
-    def map_or(self, default: U, f: Callable[[T], U]) -> U:
+    def map_or[U](self, default: U, f: Callable[[T], U]) -> U:
         """Returns the provided default result (if none),
         or applies a function to the contained value."""
         return f(self.value)
 
-    def map_or_else(self, default: Callable[[], U], f: Callable[[T], U]) -> U:
+    def map_or_else[U](self, default: Callable[[], U], f: Callable[[T], U]) -> U:
         """Computes a default function result (if none),
         or applies a different function to the contained value."""
         return f(self.value)
 
-    def and_then(self, f: Callable[[T], "Option[U]"]) -> "Option[U]":
+    def and_then[U](self, f: Callable[[T], Option[U]]) -> Option[U]:
         """Returns None if the option is None,
         otherwise calls f with the wrapped value and returns the result."""
         return f(self.value)
 
-    def or_else(self, f: Callable[[], "Option[T]"]) -> "Option[T]":
+    def or_else(self, f: Callable[[], Option[T]]) -> Option[T]:
         """Returns the option if it contains a value,
         otherwise calls f and returns the result."""
         return self
 
-    def filter(self, predicate: Callable[[T], bool]) -> "Option[T]":
+    def filter(self, predicate: Callable[[T], bool]) -> Option[T]:
         """Returns None if the option is None,
         otherwise calls predicate with the wrapped value and returns Some if true."""
         if predicate(self.value):
@@ -73,7 +74,7 @@ class Some[T]:
         """Returns True if the option is Some and the value inside matches a predicate."""
         return f(self.value)
 
-    def inspect(self, f: Callable[[T], None]) -> "Some[T]":
+    def inspect(self, f: Callable[[T], None]) -> Some[T]:
         """Calls the provided closure with the contained value (if Some)."""
         f(self.value)
         return self
@@ -86,15 +87,21 @@ class Some[T]:
         """Makes Some directly iterable."""
         return self.iter()
 
-    def flatten(self) -> "Option[U]":
+    def flatten[U](self) -> Option[U]:
         """Converts from Option[Option[U]] to Option[U]."""
-        if isinstance(self.value, (Some, NoneType)):
+        if isinstance(self.value, (Some, _NoneOption)):
             return self.value
         raise TypeError(f"flatten called on non-nested Option: {self.value}")
 
+    def ok_or[E](self, err: E) -> Result[T, E]:
+        """Convert Some(v) to Ok(v)."""
+        from .result import Ok
+
+        return Ok(self.value)
+
 
 @dataclass
-class NoneType:
+class _NoneOption[T]:
     """Represents the absence of a value."""
 
     def is_some(self) -> bool:
@@ -121,27 +128,27 @@ class NoneType:
         """Raises with a custom message."""
         raise ValueError(msg)
 
-    def map(self, f: Callable[[T], U]) -> "Option[U]":
+    def map[U](self, f: Callable[[T], U]) -> Option[U]:
         """Returns None."""
         return self
 
-    def map_or(self, default: U, f: Callable[[T], U]) -> U:
+    def map_or[U](self, default: U, f: Callable[[T], U]) -> U:
         """Returns the provided default."""
         return default
 
-    def map_or_else(self, default: Callable[[], U], f: Callable[[T], U]) -> U:
+    def map_or_else[U](self, default: Callable[[], U], f: Callable[[T], U]) -> U:
         """Returns the result of default function."""
         return default()
 
-    def and_then(self, f: Callable[[T], "Option[U]"]) -> "Option[U]":
+    def and_then[U](self, f: Callable[[T], Option[U]]) -> Option[U]:
         """Returns None."""
         return self
 
-    def or_else(self, f: Callable[[], "Option[T]"]) -> "Option[T]":
+    def or_else(self, f: Callable[[], Option[T]]) -> Option[T]:
         """Calls f and returns the result."""
         return f()
 
-    def filter(self, predicate: Callable[[T], bool]) -> "Option[T]":
+    def filter(self, predicate: Callable[[T], bool]) -> Option[T]:
         """Returns None."""
         return self
 
@@ -149,7 +156,7 @@ class NoneType:
         """Returns False."""
         return False
 
-    def inspect(self, f: Callable[[T], None]) -> "NoneType":
+    def inspect(self, f: Callable[[T], None]) -> _NoneOption[T]:
         """Does nothing, returns self."""
         return self
 
@@ -161,13 +168,19 @@ class NoneType:
         """Makes NoneType directly iterable (yields nothing)."""
         return self.iter()
 
-    def flatten(self) -> "Option[U]":
+    def flatten[U](self) -> Option[U]:
         """Returns None."""
         return self
 
+    def ok_or[E](self, err: E) -> Result[T, E]:
+        """Convert Nothing to Err(err)."""
+        from .result import Err
+
+        return Err(err)
+
 
 # Singleton None instance
-Nothing = NoneType()
+Nothing = _NoneOption[Never]()
 
 # Type alias
-Option = Some[T] | NoneType
+type Option[T] = Some[T] | _NoneOption
