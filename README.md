@@ -193,10 +193,13 @@ expected and normal; use `Result` when absence signals an error.
 
 ```python
 from polars_result import Some, Nothing, Option
+from polars_result.option import _NoneOption
 ```
 
-> `Nothing` is a singleton instance. Use `case Nothing:` in pattern matching and
-> `x.is_none()` for boolean checks.
+> `Nothing` is a singleton instance of `_NoneOption` — `repr(Nothing)` returns
+> `"Nothing"`. For boolean checks use `x.is_none()`. For pattern matching, use the
+> class pattern `case _NoneOption():` rather than `case Nothing:` — bare names in
+> `match` are capture patterns in Python and would silently match anything.
 
 **Checking state**
 
@@ -235,18 +238,28 @@ from polars_result import Some, Nothing, Option
 
 **Converting to Result**
 
+`ok_or` and `ok_or_else` convert an `Option` into a `Result`, bridging into a
+`Result` pipeline at the point where absence becomes an error:
+
 ```python
-Some(42).ok_or("missing")   # Ok(42)
-Nothing.ok_or("missing")    # Err("missing")
+Some(42).ok_or("missing")              # Ok(42)
+Nothing.ok_or("missing")              # Err("missing")
+
+Some(42).ok_or_else(lambda: "missing") # Ok(42)  — f is never called
+Nothing.ok_or_else(lambda: "missing") # Err("missing")  — f called lazily
 ```
+
+Prefer `ok_or_else` when constructing the error value is expensive.
 
 **Example:**
 
 ```python
+from polars_result.option import _NoneOption
+
 match lookup(key):
     case Some(v):
         print(f"Found: {v}")
-    case Nothing:
+    case _NoneOption():
         print("Not found")
 
 # Chain into a Result pipeline
@@ -455,6 +468,24 @@ if all(r.is_ok() for r in results):
 
 # Find the first error
 first_err = next((r for r in results if r.is_err()), None)
+```
+
+### Pattern 7: Option to Result in a pipeline
+
+```python
+from polars_result.option import _NoneOption
+from polars_result.exceptions import ValidationError
+
+result = (
+    find_column(lf, "invoice_date")      # Option[pl.Expr]
+    .ok_or(ValidationError(             # Result[pl.Expr, ValidationError]
+        "invoice_date is required",
+        field="invoice_date",
+    ))
+    .map(lambda expr: lf.with_columns(
+        expr.cast(pl.Date).alias("invoice_date")
+    ))
+)
 ```
 
 ---
