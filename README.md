@@ -4,20 +4,10 @@
 
 # polars-result
 
-Railway-oriented `Result` type for building robust Polars data pipelines with Rust-inspired error handling.
+Railway-oriented `Result` and `Option` types for Python — Rust-inspired error handling
+for data pipelines and beyond.
 
-## Python Version Compatibility
-
-**Requires Python 3.13+.** All features — generic syntax (`Ok[T]`, `Err[E]`) and pattern matching (`match`/`case`) — are fully supported.
-
-## Features
-
-- 🚂 **Railway-oriented programming** — chain operations that short-circuit on the first error
-- 🦀 **Rust-inspired Result API** — `Ok`, `Err`, `and_then`, `or_else`, `map`, and more
-- 🐻‍❄️ **Polars integration** — safe wrappers for Polars I/O and DataFrame operations (Polars is the only requirement)
-- 🎯 **Type-safe** — full type inference with Python 3.12+ type parameters
-- 🔧 **Decorator support** — convert any function to return `Result` with `@resultify`
-- 📦 **No additional dependencies** — Polars is the only requirement
+**Requires Python 3.13+.** No additional dependencies.
 
 ## Installation
 
@@ -31,381 +21,45 @@ pip install polars-result
 
 ## Quick Start
 
-### Basic Result Usage
-
 ```python
-from polars_result import Ok, Err
+from polars_result import Ok, Err, Some, Nothing, resultify
+from polars_result.exceptions import ValidationError, PipelineError
 
-success = Ok(42)
-failure = Err("something went wrong")
+# Pattern match on a Result
+def parse_age(raw: str) -> Result[int, ValidationError]:
+    match raw.strip().isdigit():
+        case True:
+            age = int(raw)
+            return Ok(age) if age > 0 else Err(ValidationError("Age must be positive", field="age", value=age))
+        case False:
+            return Err(ValidationError("Age must be numeric", field="age", value=raw))
 
-# Pattern matching
-match success:
-    case Ok(value):
-        print(f"Success: {value}")
-    case Err(error):
-        print(f"Error: {error}")
+match parse_age("25"):
+    case Ok(age):
+        print(f"Valid age: {age}")
+    case Err(ValidationError() as e):
+        print(f"Invalid: {e} (field={e.field}, value={e.value})")
 
 # Chain operations — short-circuits on the first Err
 result = (
     Ok(10)
-    .map(lambda x: x * 2)            # Ok(20)
-    .and_then(lambda x: Ok(x + 5))   # Ok(25)
-    .map(lambda x: x - 1)            # Ok(24)
+    .map(lambda x: x * 2)          # Ok(20)
+    .and_then(lambda x: Ok(x + 5)) # Ok(25)
+    .map(lambda x: x - 1)          # Ok(24)
 )
-```
 
-### Safe Polars Operations
-
-```python
-from polars_result import read_csv, PolarsResult
+# Wrap any function with @resultify
 import polars as pl
 
-# Each operation returns Result[T, PolarsError] — never raises
-pipeline = (
-    read_csv("input.csv")
-    .and_then(lambda df: PolarsResult.filter(df, pl.col("age") > 18))
-    .and_then(lambda df: PolarsResult.select(df, "name", "age"))
-    .and_then(lambda df: PolarsResult.write_parquet(df, "output.parquet"))
-)
+@resultify
+def load(path: str) -> pl.DataFrame:
+    return pl.read_csv(path)
 
-match pipeline:
-    case Ok(_):
-        print("Done")
+match load("data.csv"):
+    case Ok(df):
+        print(df)
     case Err(e):
         print(f"Failed: {e}")
-```
-
-### Decorator for Existing Functions
-
-`@resultify` is the easiest way to bring existing code into a railway pipeline — wrap any
-function and it returns `Result` instead of raising.
-
-```python
-from polars_result import resultify
-import polars as pl
-
-# Before: raises on failure
-def load_and_clean(path: str) -> pl.DataFrame:
-    df = pl.read_csv(path)
-    return df.filter(pl.col("age") > 0)
-
-# After: returns Result[pl.DataFrame, Exception] — no try/except needed
-@resultify
-def load_and_clean(path: str) -> pl.DataFrame:
-    df = pl.read_csv(path)
-    return df.filter(pl.col("age") > 0)
-
-# Catch only specific exceptions — others propagate normally
-@resultify(catch=FileNotFoundError)
-def load_file(path: str) -> pl.DataFrame:
-    return pl.read_parquet(path)
-```
-
-> **Note:** If the wrapped function already returns a `Result`, `@resultify` passes it through
-> without double-wrapping.
-
-### Generic Exception Handling
-
-```python
-from polars_result import catch
-
-result = catch(lambda: int("42"))           # Ok(42)
-error  = catch(lambda: int("bad"))          # Err(ValueError(...))
-
-# Catch a specific exception type — other exceptions still propagate
-result = catch(lambda: int("bad"), ValueError)
-```
-
-> **Important:** When a specific exception type is passed to `catch`, only that type is caught
-> and wrapped in `Err`. Any other exception propagates normally as if `catch` were not there.
-
----
-
-## API Reference
-
-### Result Methods
-
-Both `Ok[T]` and `Err[E]` implement the full interface below. Methods that operate on the
-"other" variant are no-ops that pass `self` through unchanged.
-
-**Checking state**
-
-| Method | Description |
-|---|---|
-| `is_ok() → bool` | `True` if `Ok` |
-| `is_err() → bool` | `True` if `Err` |
-| `is_ok_and(f: T → bool) → bool` | `True` if `Ok` and value satisfies `f` |
-| `is_err_and(f: E → bool) → bool` | `True` if `Err` and error satisfies `f` |
-
-**Extracting values**
-
-| Method | On `Ok` | On `Err` |
-|---|---|---|
-| `unwrap()` | returns value | raises `ValueError` |
-| `unwrap_err()` | raises `ValueError` | returns error |
-| `unwrap_or(default)` | returns value | returns `default` |
-| `unwrap_or_else(f)` | returns value | returns `f(error)` |
-| `expect(msg)` | returns value | raises with `msg` |
-| `expect_err(msg)` | raises with `msg` | returns error |
-| `into_ok()` | returns value | raises `TypeError` |
-| `into_err()` | raises `TypeError` | returns error |
-
-> Use `unwrap` and `expect` in tests or where an `Err` is genuinely impossible.
-> Prefer `unwrap_or` / `unwrap_or_else` in production code.
-> `into_ok` / `into_err` signal a static contract: "I know this cannot be the other variant."
-
-**Transforming**
-
-| Method | Activates on | Description |
-|---|---|---|
-| `map(f: T → U)` | `Ok` | wraps `f(value)` in `Ok`; passes `Err` through |
-| `map_err(f: E → F)` | `Err` | wraps `f(error)` in `Err`; passes `Ok` through |
-| `map_or(default, f)` | both | `f(value)` if `Ok`, else `default` — returns plain value |
-| `map_or_else(default_f, f)` | both | `f(value)` if `Ok`, else `default_f(error)` — returns plain value |
-| `and_then(f: T → Result)` | `Ok` | calls `f(value)`; passes `Err` through |
-| `bind(f: T → Result)` | `Ok` | alias for `and_then` — standard FP/monadic name |
-| `or_else(f: E → Result)` | `Err` | calls `f(error)`; passes `Ok` through |
-| `flatten()` | `Ok(Result)` | collapses one level of nesting — see below |
-| `map_or_default(f, default)` | both | `f(value)` if `Ok`, else `default` — argument order is `f` first |
-
-> **`map` vs `and_then`** — if the function you are chaining can fail (returns `Result`), use
-> `and_then`. If it is a plain transform that cannot fail, use `map`.
-
-`flatten()` collapses one level of `Result` nesting:
-
-```python
-Ok(Ok(42)).flatten()   # → Ok(42)
-Ok(Err("e")).flatten() # → Err("e")
-Err("e").flatten()     # → Err("e")  (no-op on Err)
-```
-
-**Side-effects**
-
-| Method | Activates on | Description |
-|---|---|---|
-| `inspect(f: T → None)` | `Ok` | calls `f(value)` for logging; returns `self` unchanged |
-| `inspect_err(f: E → None)` | `Err` | calls `f(error)` for logging; returns `self` unchanged |
-
-**Iteration**
-
-`Ok` is iterable and yields its value once. `Err` yields nothing. This lets you filter a
-list of results without explicit `is_ok()` checks:
-
-```python
-results = [Ok(12.5), Err("bad"), Ok(33.0), Err("null"), Ok(8.75)]
-
-ok_values = [v for r in results for v in r]  # [12.5, 33.0, 8.75]
-total     = sum(v for r in results for v in r)  # 54.25
-```
-
----
-
-### Option Methods
-
-`Some[T]` and `Nothing` provide optional value handling that mirrors the `Result` API — use
-`Option` when absence is expected and normal, `Result` when absence signals an error.
-
-```python
-from polars_result import Some, Nothing
-
-value = Some(42)
-empty = Nothing
-
-match value:
-    case Some(v):
-        print(f"Got: {v}")
-    case Nothing:
-        print("Nothing here")
-
-# Convert to Result when you need to rejoin a pipeline
-result = Some(42).ok_or("value was missing")   # Ok(42)
-result = Nothing.ok_or("value was missing")    # Err("value was missing")
-result = Nothing.ok_or_else(lambda: compute_error())  # lazy error construction
-```
-
-| Method | Description |
-|---|---|
-| `is_some() → bool` | `True` if `Some` |
-| `is_none() → bool` | `True` if `Nothing` |
-| `unwrap()` | returns value or raises |
-| `unwrap_or(default)` | returns value or `default` |
-| `unwrap_or_else(f)` | returns value or `f()` |
-| `map(f)` | transforms value if `Some`; passes `Nothing` through |
-| `and_then(f)` | chains `Option`-returning functions |
-| `ok_or(err)` | converts `Some(v)` → `Ok(v)`, `Nothing` → `Err(err)` |
-| `ok_or_else(f)` | same but computes error lazily |
-
----
-
-### Polars Operations
-
-All operations return `Result[T, PolarsError]` and never raise.
-
-**Reading**
-
-```python
-from polars_result import read_csv, read_parquet, read_json, read_excel
-from polars_result import scan_csv, scan_parquet
-
-result      = read_csv("data.csv", separator=";")       # Result[DataFrame, PolarsError]
-lazy_result = scan_parquet("data.parquet")              # Result[LazyFrame, PolarsError]
-result      = read_excel("data.xlsx")                   # Result[DataFrame, PolarsError]
-result      = read_excel("data.xlsx", sheet_name="Sheet1")
-result      = from_records([{"a": 1}, {"a": 2}])
-```
-
-**Constructing**
-
-```python
-from polars_result import from_dict, from_records
-
-result = from_dict({"a": [1, 2, 3], "b": [4, 5, 6]})
-result = from_records([{"a": 1, "b": 2}, {"a": 3, "b": 4}])
-```
-
-**Writing**
-
-Write operations return `Result[None, PolarsError]` — the `Ok` value is `None` since the
-meaningful outcome is the file on disk, not a return value.
-
-```python
-from polars_result import PolarsResult
-
-PolarsResult.write_csv(df, "output.csv")
-PolarsResult.write_parquet(df, "output.parquet")
-PolarsResult.write_json(df, "output.json")
-```
-
-**DataFrame operations**
-
-```python
-PolarsResult.select(df, "col1", "col2")
-PolarsResult.filter(df, pl.col("age") > 18)
-PolarsResult.with_columns(df, tax=pl.col("amount") * 0.08)
-PolarsResult.join(df1, df2, on="id")
-PolarsResult.group_by(df, "category")   # validates column names eagerly
-```
-
-**LazyFrame**
-
-```python
-from polars_result import collect
-
-lf     = pl.LazyFrame({"a": [1, 2, 3]})
-result = collect(lf)                     # Result[DataFrame, PolarsError]
-```
-
----
-
-## Error Handling Patterns
-
-### Pattern 1: Railway chaining
-
-The most common pattern — each step either advances the pipeline or short-circuits to `Err`.
-
-```python
-result = (
-    read_csv("input.csv")
-    .and_then(validate)
-    .and_then(transform)
-    .and_then(save)
-)
-```
-
-### Pattern 2: Early return with match
-
-```python
-match read_csv("data.csv"):
-    case Err(e):
-        return handle_error(e)
-    case Ok(df):
-        return process(df)
-```
-
-### Pattern 3: Error recovery
-
-```python
-result = (
-    read_csv("cache.csv")
-    .or_else(lambda _: read_csv("backup.csv"))
-    .or_else(lambda _: Ok(pl.DataFrame()))
-)
-```
-
-### Pattern 4: Unwrap with default
-
-```python
-df    = read_csv("data.csv").unwrap_or(pl.DataFrame())
-count = read_csv("data.csv").map(len).unwrap_or(0)
-```
-
-### Pattern 5: Logging without breaking the chain
-
-```python
-result = (
-    read_csv("data.csv")
-    .inspect(lambda df: logger.info(f"Loaded {len(df)} rows"))
-    .and_then(transform)
-    .inspect_err(lambda e: logger.error(f"Pipeline failed: {e}"))
-)
-```
-
----
-
-## Real-World Example
-
-```python
-import polars as pl
-from polars_result import read_csv, PolarsResult, Ok, Err
-
-def process_sales(input_path: str, output_path: str) -> bool:
-    result = (
-        read_csv(input_path)
-
-        # Validate
-        .and_then(lambda df: PolarsResult.filter(
-            df,
-            pl.col("amount").is_not_null() & (pl.col("amount") > 0)
-        ))
-
-        # Enrich
-        .and_then(lambda df: PolarsResult.with_columns(
-            df,
-            tax=pl.col("amount") * 0.08,
-            total=pl.col("amount") * 1.08,
-        ))
-
-        # Aggregate — group_by validates column names eagerly and returns a
-        # GroupBy object; we use .map (not .and_then) here because .agg is
-        # a plain transform that cannot fail
-        .and_then(lambda df: PolarsResult.group_by(df, "category"))
-        .map(lambda gb: gb.agg([
-            pl.col("amount").sum().alias("total_sales"),
-            pl.col("amount").count().alias("transaction_count"),
-        ]))
-
-        # Write
-        .and_then(lambda df: PolarsResult.write_parquet(df, output_path))
-    )
-
-    match result:
-        case Ok(_):
-            print(f"✓ Processed {input_path}")
-            return True
-        case Err(error):
-            print(f"✗ Failed: {error}")
-            return False
-
-
-def load_with_fallback(primary: str, backup: str) -> pl.DataFrame:
-    return (
-        read_csv(primary)
-        .inspect(lambda df: print(f"Loaded primary: {len(df)} rows"))
-        .or_else(lambda _: read_csv(backup))
-        .inspect(lambda df: print(f"Loaded backup: {len(df)} rows"))
-        .unwrap_or_else(lambda _: pl.DataFrame())
-    )
 ```
 
 ---
@@ -418,12 +72,10 @@ def load_with_fallback(primary: str, backup: str) -> pl.DataFrame:
 try:
     df = pl.read_csv("data.csv")
     df = df.filter(pl.col("age") > 18)
-    df = df.select("name", "age")
     df.write_parquet("output.parquet")
 except Exception as e:
-    # Which operation failed?
-    # What is the error type?
-    # How do we recover gracefully?
+    # Which step failed? What type is the error?
+    # How do we recover selectively?
     log_error(e)
 ```
 
@@ -431,22 +83,379 @@ except Exception as e:
 
 ```python
 result = (
-    read_csv("data.csv")                                          # Result[DataFrame, PolarsError]
-    .and_then(lambda df: PolarsResult.filter(df, ...))            # short-circuits on Err
-    .and_then(lambda df: PolarsResult.select(df, ...))            # type-safe at each step
-    .and_then(lambda df: PolarsResult.write_parquet(df, "..."))   # clear error provenance
+    load("data.csv")                    # Result[DataFrame, PipelineError]
+    .and_then(validate)                 # short-circuits on Err
+    .and_then(transform)                # type-safe at each step
+    .and_then(save)                     # clear error provenance
 )
 
 match result:
     case Ok(_):
-        print("Success")
-    case Err(error):
-        print(f"Failed at: {error}")
+        print("Done")
+    case Err(PipelineError() as e):
+        print(f"Failed at step '{e.step}': {e}")
+    case Err(ValidationError() as e):
+        print(f"Bad value for '{e.field}': {e.value}")
 ```
 
-The benefits: errors are values rather than exceptions, every failure is typed and traceable to
-the exact step that produced it, and recovery is explicit and composable rather than buried in
-`except` clauses.
+Errors are values — typed, traceable to the exact step that produced them, and
+recoverable without `except` clauses scattered through your pipeline.
+
+---
+
+## API Reference
+
+### Result
+
+`Ok[T]` and `Err[E]` both implement the full interface below. Methods that operate
+on the "other" variant are no-ops that return `self` unchanged.
+
+```python
+from polars_result import Ok, Err, Result
+```
+
+**Checking state**
+
+| Method | `Ok` | `Err` |
+|---|---|---|
+| `is_ok() → bool` | `True` | `False` |
+| `is_err() → bool` | `False` | `True` |
+| `is_ok_and(f: T → bool) → bool` | `f(value)` | `False` |
+| `is_err_and(f: E → bool) → bool` | `False` | `f(error)` |
+
+**Extracting values**
+
+| Method | `Ok` | `Err` |
+|---|---|---|
+| `unwrap()` | returns value | raises `ValueError` |
+| `unwrap_err()` | raises `ValueError` | returns error |
+| `unwrap_or(default)` | returns value | returns `default` |
+| `unwrap_or_else(f)` | returns value | returns `f(error)` |
+| `expect(msg)` | returns value | raises with `msg` |
+| `expect_err(msg)` | raises with `msg` | returns error |
+| `into_ok()` | returns value | raises `TypeError` |
+| `into_err()` | raises `TypeError` | returns error |
+
+> Use `unwrap` and `expect` in tests or where `Err` is genuinely impossible.
+> Prefer `unwrap_or` / `unwrap_or_else` in production pipelines.
+> `into_ok` / `into_err` express a static contract: "I know this cannot be the other variant."
+
+**Transforming**
+
+| Method | Activates on | Description |
+|---|---|---|
+| `map(f: T → U)` | `Ok` | wraps `f(value)` in `Ok`; passes `Err` through |
+| `map_err(f: E → F)` | `Err` | wraps `f(error)` in `Err`; passes `Ok` through |
+| `map_or(default, f)` | both | `f(value)` if `Ok`, else `default` — returns plain value |
+| `map_or_else(default_f, f)` | both | `f(value)` if `Ok`, else `default_f(error)` — returns plain value |
+| `map_or_default(f, default)` | both | same as `map_or` with argument order `f` first |
+| `and_then(f: T → Result)` | `Ok` | calls `f(value)`; passes `Err` through |
+| `bind(f: T → Result)` | `Ok` | alias for `and_then` — standard monadic name |
+| `or_else(f: E → Result)` | `Err` | calls `f(error)`; passes `Ok` through |
+| `flatten()` | `Ok(Result)` | collapses one level of nesting |
+
+> **`map` vs `and_then`** — use `and_then` when the next step can fail (returns `Result`).
+> Use `map` for plain transforms that cannot fail.
+
+`flatten()` collapses one level of `Result` nesting:
+
+```python
+Ok(Ok(42)).flatten()    # → Ok(42)
+Ok(Err("e")).flatten()  # → Err("e")
+Err("e").flatten()      # → Err("e")  (no-op)
+```
+
+**Side-effects**
+
+| Method | Activates on | Description |
+|---|---|---|
+| `inspect(f: T → None)` | `Ok` | calls `f(value)` for logging; returns `self` |
+| `inspect_err(f: E → None)` | `Err` | calls `f(error)` for logging; returns `self` |
+
+**Iteration**
+
+`Ok` yields its value once; `Err` yields nothing — filter a list of results without
+explicit `is_ok()` checks:
+
+```python
+results = [Ok(12.5), Err("bad"), Ok(33.0), Err("null"), Ok(8.75)]
+
+ok_values = [v for r in results for v in r]   # [12.5, 33.0, 8.75]
+total     = sum(v for r in results for v in r) # 54.25
+```
+
+---
+
+### Option
+
+`Some[T]` and `Nothing` provide optional value handling. Use `Option` when absence is
+expected and normal; use `Result` when absence signals an error.
+
+```python
+from polars_result import Some, Nothing, Option
+```
+
+> `Nothing` is a singleton instance. Use `case Nothing:` in pattern matching and
+> `x.is_none()` for boolean checks.
+
+**Checking state**
+
+| Method | `Some` | `Nothing` |
+|---|---|---|
+| `is_some() → bool` | `True` | `False` |
+| `is_none() → bool` | `False` | `True` |
+| `is_some_and(f: T → bool) → bool` | `f(value)` | `False` |
+
+**Extracting values**
+
+| Method | `Some` | `Nothing` |
+|---|---|---|
+| `unwrap()` | returns value | raises `ValueError` |
+| `unwrap_or(default)` | returns value | returns `default` |
+| `unwrap_or_else(f)` | returns value | returns `f()` |
+| `expect(msg)` | returns value | raises with `msg` |
+
+**Transforming**
+
+| Method | Activates on | Description |
+|---|---|---|
+| `map(f: T → U)` | `Some` | returns `Some(f(value))`; passes `Nothing` through |
+| `map_or(default, f)` | both | `f(value)` if `Some`, else `default` |
+| `map_or_else(default_f, f)` | both | `f(value)` if `Some`, else `default_f()` |
+| `and_then(f: T → Option)` | `Some` | calls `f(value)`; passes `Nothing` through |
+| `or_else(f: → Option)` | `Nothing` | calls `f()`; passes `Some` through |
+| `filter(predicate: T → bool)` | `Some` | returns `Nothing` if predicate fails |
+| `flatten()` | `Some(Option)` | collapses one level of nesting |
+
+**Side-effects**
+
+| Method | Activates on | Description |
+|---|---|---|
+| `inspect(f: T → None)` | `Some` | calls `f(value)`; returns `self` |
+
+**Converting to Result**
+
+```python
+Some(42).ok_or("missing")   # Ok(42)
+Nothing.ok_or("missing")    # Err("missing")
+```
+
+**Example:**
+
+```python
+match lookup(key):
+    case Some(v):
+        print(f"Found: {v}")
+    case Nothing:
+        print("Not found")
+
+# Chain into a Result pipeline
+result = (
+    lookup("user_id")
+    .map(str.strip)
+    .ok_or(ValidationError("user_id is required", field="user_id"))
+)
+```
+
+---
+
+### Exceptions
+
+All exceptions carry a `cause` that preserves the original exception for debugging.
+
+```python
+from polars_result.exceptions import (
+    PolarsResultError,
+    ValidationError,
+    ResultSchemaError,
+    PipelineError,
+)
+```
+
+**Hierarchy**
+
+```
+Exception
+└── PolarsResultError          # base — message + cause
+    ├── ValidationError        # + field, value
+    │   └── ResultSchemaError  # + expected, got
+    └── PipelineError          # + step
+```
+
+**`PolarsResultError`**
+
+```python
+PolarsResultError(message: str, *, cause: BaseException | None = None)
+```
+
+Base class for all package exceptions. Use `from_polars()` to wrap raw Polars
+exceptions with automatic subtype mapping:
+
+```python
+from polars.exceptions import ComputeError
+
+err = PolarsResultError.from_polars(ComputeError("overflow"), "compute totals")
+# → PipelineError('compute totals: overflow', cause=ComputeError('overflow'))
+```
+
+| Polars exception | Maps to |
+|---|---|
+| `SchemaError`, `ColumnNotFoundError`, `DuplicateError` | `ResultSchemaError` |
+| `ComputeError`, `InvalidOperationError`, `ShapeError`, `NoDataError` | `PipelineError` |
+| anything else | `PolarsResultError` |
+
+**`ValidationError`**
+
+```python
+ValidationError(message: str, *, field: str | None = None, value: object = None, cause: BaseException | None = None)
+```
+
+```python
+err = ValidationError("Expected positive", field="amount", value=-3)
+
+case Err(ValidationError() as e):
+    print(e.field)  # "amount"
+    print(e.value)  # -3
+```
+
+**`ResultSchemaError`**
+
+```python
+ResultSchemaError(message: str, *, expected: dict | None = None, got: dict | None = None, field: str | None = None, cause: BaseException | None = None)
+```
+
+```python
+err = ResultSchemaError(
+    "Schema mismatch",
+    expected={"amount": "Float64"},
+    got={"amount": "Int32"},
+)
+```
+
+**`PipelineError`**
+
+```python
+PipelineError(message: str, *, step: str | None = None, cause: BaseException | None = None)
+```
+
+```python
+err = PipelineError("Transform failed", step="compute_totals", cause=original)
+
+case Err(PipelineError() as e):
+    print(e.step)   # "compute_totals"
+    print(e.cause)  # original exception
+```
+
+---
+
+### `@resultify`
+
+Wraps any function to return `Result` instead of raising.
+
+```python
+from polars_result import resultify
+```
+
+**Bare usage** — catches all exceptions, wraps as `PipelineError`:
+
+```python
+@resultify
+def load(path: str) -> pl.DataFrame:
+    return pl.read_csv(path)
+
+load("data.csv")   # Result[pl.DataFrame, PipelineError]
+```
+
+**With parameters** — control what is caught and how errors are wrapped:
+
+```python
+@resultify(catch_types=FileNotFoundError, error_type=PipelineError)
+def load(path: str) -> pl.DataFrame:
+    return pl.read_csv(path)
+```
+
+`catch_types` accepts a single type or a tuple of types. Exceptions not matched
+propagate normally — never silently swallowed.
+
+The original exception is always preserved on `error.cause`:
+
+```python
+match load("missing.csv"):
+    case Err(PipelineError() as e):
+        print(type(e.cause))  # FileNotFoundError
+```
+
+Functions that already return a `Result` are passed through without double-wrapping.
+Functions returning `None` produce `Ok(None)`.
+
+---
+
+## Error Handling Patterns
+
+### Pattern 1: Railway chaining
+
+```python
+result = (
+    load("input.csv")
+    .and_then(validate)
+    .and_then(transform)
+    .and_then(save)
+)
+```
+
+### Pattern 2: Early return with match
+
+```python
+match load("data.csv"):
+    case Err(e):
+        return handle_error(e)
+    case Ok(df):
+        return process(df)
+```
+
+### Pattern 3: Error recovery
+
+```python
+result = (
+    load("cache.csv")
+    .or_else(lambda _: load("backup.csv"))
+    .or_else(lambda _: Ok(pl.DataFrame()))
+)
+```
+
+### Pattern 4: Unwrap with default
+
+```python
+df    = load("data.csv").unwrap_or(pl.DataFrame())
+count = load("data.csv").map(len).unwrap_or(0)
+```
+
+### Pattern 5: Logging without breaking the chain
+
+```python
+result = (
+    load("data.csv")
+    .inspect(lambda df: logger.info(f"Loaded {len(df)} rows"))
+    .and_then(transform)
+    .inspect_err(lambda e: logger.error(f"Failed: {e}"))
+)
+```
+
+### Pattern 6: Collecting results from a list
+
+```python
+results = [parse(row) for row in rows]
+
+# Extract only the Ok values — Err yields nothing, Ok yields once
+values = [v for r in results for v in r]
+
+# Check if all succeeded
+if all(r.is_ok() for r in results):
+    ...
+
+# Find the first error
+first_err = next((r for r in results if r.is_err()), None)
+```
 
 ---
 
@@ -461,8 +470,8 @@ uv run ruff format src/ tests/                               # format
 uv run ty check src/                                         # type check (Astral ty)
 ```
 
-> [`ty`](https://github.com/astral-sh/ty) is Astral's type checker (the team behind `ruff` and `uv`).
-> `mypy` and `pyright` are also compatible if you prefer them.
+> [`ty`](https://github.com/astral-sh/ty) is Astral's type checker — the team behind `ruff` and `uv`.
+> `mypy` and `pyright` are also compatible.
 
 ## Contributing
 
