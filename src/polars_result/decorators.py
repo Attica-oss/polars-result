@@ -1,35 +1,35 @@
 """Decorators for wrapping functions to return Result types."""
 
-from __future__ import annotations
-
 import functools
 from collections.abc import Callable
 from typing import cast, overload
 
-from .exceptions import PipelineError
+from .exceptions import PipelineError, PolarsResultError
 from .result import Err, Ok, Result
 
 
 @overload
-def resultify[**P, R](func: Callable[P, R]) -> Callable[P, Result[R, PipelineError]]: ...
+def resultify[**P, R](
+    func: Callable[P, R],
+) -> Callable[P, Result[R, PipelineError]]: ...
 
 
 @overload
 def resultify[**P, R](
     *,
-    catch: type[Exception] | tuple[type[Exception], ...] = Exception,
-    error_type: type[Exception] = PipelineError,
-) -> Callable[[Callable[P, R]], Callable[P, Result[R, Exception]]]: ...
+    catch_types: type[Exception] | tuple[type[Exception], ...] = Exception,
+    error_type: type[PolarsResultError] = PipelineError,
+) -> Callable[[Callable[P, R]], Callable[P, Result[R, PolarsResultError]]]: ...
 
 
 def resultify[**P, R](
     func: Callable[P, R] | None = None,
     *,
-    catch: type[Exception] | tuple[type[Exception], ...] = Exception,
-    error_type: type[Exception] = PipelineError,
+    catch_types: type[Exception] | tuple[type[Exception], ...] = Exception,
+    error_type: type[PolarsResultError] = PipelineError,
 ) -> (
-    Callable[P, Result[R, Exception]]
-    | Callable[[Callable[P, R]], Callable[P, Result[R, Exception]]]
+    Callable[P, Result[R, PolarsResultError]]
+    | Callable[[Callable[P, R]], Callable[P, Result[R, PolarsResultError]]]
 ):
     """Decorator that wraps a function to return a Result.
 
@@ -39,44 +39,40 @@ def resultify[**P, R](
         def load(path: str) -> pl.DataFrame:
             return pl.read_csv(path)
 
-        @resultify(catch=FileNotFoundError, error_type=PipelineError)
+        @resultify(catch_types=FileNotFoundError, error_type=PipelineError)
         def load(path: str) -> pl.DataFrame:
             return pl.read_csv(path)
 
-    Functions returning ``None`` produce ``Result.ok(None)`` (not an error).
+    Functions returning ``None`` produce ``Ok(None)`` — not an error.
     Functions already returning a ``Result`` are passed through unchanged.
+    Exceptions not matched by ``catch_types`` propagate normally.
 
     Parameters
     ----------
-    catch
-        Exception type(s) to catch. Uncaught exceptions propagate normally.
-    error_type
-        Exception class used to wrap caught errors. Defaults to ``PipelineError``.
+    catch_types:
+        Exception type(s) to catch. Defaults to ``Exception`` (catches all).
+        Unmatched exceptions propagate normally.
+    error_type:
+        ``PolarsResultError`` subclass used to wrap caught errors.
+        Defaults to ``PipelineError``. The original exception is preserved
+        as ``error_type.cause``.
     """
 
-    def decorator(fn: Callable[P, R]) -> Callable[P, Result[R, Exception]]:
+    def decorator(fn: Callable[P, R]) -> Callable[P, Result[R, PolarsResultError]]:
         fn_name = getattr(fn, "__name__", repr(fn))
 
         @functools.wraps(fn)
-        def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[R, Exception]:
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[R, PolarsResultError]:
             try:
                 value = fn(*args, **kwargs)
-
-                # If the function already returns a Result, pass it through
                 if isinstance(value, (Ok, Err)):
-                    return cast(Result[R, Exception], value)
-
-                # Wrap the value in Ok (handles None as well)
-                return cast(Result[R, Exception], Ok(value))
-
-            except catch as e:
-                return Err(error_type(f"{fn_name} failed: {e}"))
+                    return cast(Result[R, PolarsResultError], value)
+                return cast(Result[R, PolarsResultError], Ok(value))
+            except catch_types as e:
+                return Err(error_type(f"{fn_name} failed: {e}", cause=e))
 
         return wrapper
 
     if func is not None:
-        # Used as @resultify without parentheses
         return decorator(func)
-
-    # Used as @resultify(...) with parameters
     return decorator

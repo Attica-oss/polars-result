@@ -6,13 +6,6 @@ from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from typing import Never
 
-from .formatting import format_result_data
-
-# T = TypeVar("T")
-# E = TypeVar("E")
-# U = TypeVar("U")
-# F = TypeVar("F")  # For error type transformations
-
 
 class Infallible:
     """A type that can never be instantiated (like Rust's !)"""
@@ -123,7 +116,7 @@ class Ok[T]:
         raise TypeError("Called into_err on Ok variant")
 
     def __repr__(self) -> str:
-        return f"Ok({format_result_data(self.value)})"
+        return f"Ok({self.value})"
 
 
 @dataclass
@@ -222,7 +215,7 @@ class Err[E]:
         return self.error
 
     def __repr__(self) -> str:
-        return f"Err({format_result_data(self.error)})"
+        return f"Err({self.error})"
 
 
 type Result[T, E] = Ok[T] | Err[E]
