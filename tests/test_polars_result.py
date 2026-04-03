@@ -8,7 +8,6 @@ import pytest
 from polars.exceptions import PolarsError
 
 from polars_result import (
-    # Err,
     Ok,
     PolarsResult,
     catch,

@@ -6,17 +6,18 @@
 
 Railway-oriented `Result` type for building robust Polars data pipelines with Rust-inspired error handling.
 
-> **Requires Python 3.12+** for generic type syntax (`Ok[T]`, `Err[E]`).  
-> Pattern matching (`match`/`case`) requires Python 3.10+.
+## Python Version Compatibility
+
+**Requires Python 3.13+.** All features — generic syntax (`Ok[T]`, `Err[E]`) and pattern matching (`match`/`case`) — are fully supported.
 
 ## Features
 
 - 🚂 **Railway-oriented programming** — chain operations that short-circuit on the first error
 - 🦀 **Rust-inspired Result API** — `Ok`, `Err`, `and_then`, `or_else`, `map`, and more
-- 🐻‍❄️ **Polars integration** — safe wrappers for common Polars I/O and DataFrame operations
+- 🐻‍❄️ **Polars integration** — safe wrappers for Polars I/O and DataFrame operations (Polars is the only requirement)
 - 🎯 **Type-safe** — full type inference with Python 3.12+ type parameters
 - 🔧 **Decorator support** — convert any function to return `Result` with `@resultify`
-- 📦 **Zero dependencies** — only requires Polars
+- 📦 **No additional dependencies** — Polars is the only requirement
 
 ## Installation
 
@@ -38,7 +39,7 @@ from polars_result import Ok, Err
 success = Ok(42)
 failure = Err("something went wrong")
 
-# Pattern matching (Python 3.10+)
+# Pattern matching
 match success:
     case Ok(value):
         print(f"Success: {value}")
@@ -49,7 +50,7 @@ match success:
 result = (
     Ok(10)
     .map(lambda x: x * 2)            # Ok(20)
-    .and_then(lambda x: Ok(x + 5))       # Ok(25)
+    .and_then(lambda x: Ok(x + 5))   # Ok(25)
     .map(lambda x: x - 1)            # Ok(24)
 )
 ```
@@ -77,13 +78,21 @@ match pipeline:
 
 ### Decorator for Existing Functions
 
+`@resultify` is the easiest way to bring existing code into a railway pipeline — wrap any
+function and it returns `Result` instead of raising.
+
 ```python
 from polars_result import resultify
 import polars as pl
 
+# Before: raises on failure
+def load_and_clean(path: str) -> pl.DataFrame:
+    df = pl.read_csv(path)
+    return df.filter(pl.col("age") > 0)
+
+# After: returns Result[pl.DataFrame, Exception] — no try/except needed
 @resultify
 def load_and_clean(path: str) -> pl.DataFrame:
-    """Now returns Result[pl.DataFrame, Exception] instead of raising."""
     df = pl.read_csv(path)
     return df.filter(pl.col("age") > 0)
 
@@ -93,6 +102,9 @@ def load_file(path: str) -> pl.DataFrame:
     return pl.read_parquet(path)
 ```
 
+> **Note:** If the wrapped function already returns a `Result`, `@resultify` passes it through
+> without double-wrapping.
+
 ### Generic Exception Handling
 
 ```python
@@ -101,9 +113,12 @@ from polars_result import catch
 result = catch(lambda: int("42"))           # Ok(42)
 error  = catch(lambda: int("bad"))          # Err(ValueError(...))
 
-# Catch a specific type — other exceptions still propagate
+# Catch a specific exception type — other exceptions still propagate
 result = catch(lambda: int("bad"), ValueError)
 ```
+
+> **Important:** When a specific exception type is passed to `catch`, only that type is caught
+> and wrapped in `Err`. Any other exception propagates normally as if `catch` were not there.
 
 ---
 
@@ -148,14 +163,22 @@ Both `Ok[T]` and `Err[E]` implement the full interface below. Methods that opera
 | `map_err(f: E → F)` | `Err` | wraps `f(error)` in `Err`; passes `Ok` through |
 | `map_or(default, f)` | both | `f(value)` if `Ok`, else `default` — returns plain value |
 | `map_or_else(default_f, f)` | both | `f(value)` if `Ok`, else `default_f(error)` — returns plain value |
-| `and_then(f: T → Result)` | `Ok` | calls `f(value)`; passes `Err` through.  |
+| `and_then(f: T → Result)` | `Ok` | calls `f(value)`; passes `Err` through |
 | `bind(f: T → Result)` | `Ok` | alias for `and_then` — standard FP/monadic name |
 | `or_else(f: E → Result)` | `Err` | calls `f(error)`; passes `Ok` through |
-| `flatten()` | `Ok(Result)` | collapses `Ok(Ok(v))` → `Ok(v)`, `Ok(Err(e))` → `Err(e)` |
+| `flatten()` | `Ok(Result)` | collapses one level of nesting — see below |
 | `map_or_default(f, default)` | both | `f(value)` if `Ok`, else `default` — argument order is `f` first |
 
-> **`map` vs `and_then`** — if the function you are chaining can fail (returns `Result`), use `and_then`.
-> If it is a plain transform that cannot fail, use `map`.
+> **`map` vs `and_then`** — if the function you are chaining can fail (returns `Result`), use
+> `and_then`. If it is a plain transform that cannot fail, use `map`.
+
+`flatten()` collapses one level of `Result` nesting:
+
+```python
+Ok(Ok(42)).flatten()   # → Ok(42)
+Ok(Err("e")).flatten() # → Err("e")
+Err("e").flatten()     # → Err("e")  (no-op on Err)
+```
 
 **Side-effects**
 
@@ -180,17 +203,40 @@ total     = sum(v for r in results for v in r)  # 54.25
 
 ### Option Methods
 
-`Some[T]` and `Nothing` mirror the Result API for optional values.
+`Some[T]` and `Nothing` provide optional value handling that mirrors the `Result` API — use
+`Option` when absence is expected and normal, `Result` when absence signals an error.
+
+```python
+from polars_result import Some, Nothing
+
+value = Some(42)
+empty = Nothing
+
+match value:
+    case Some(v):
+        print(f"Got: {v}")
+    case Nothing:
+        print("Nothing here")
+
+# Convert to Result when you need to rejoin a pipeline
+result = Some(42).ok_or("value was missing")   # Ok(42)
+result = Nothing.ok_or("value was missing")    # Err("value was missing")
+result = Nothing.ok_or_else(lambda: compute_error())  # lazy error construction
+```
 
 | Method | Description |
 |---|---|
-| `is_some() → bool` | `True` if Some |
-| `is_none() → bool` | `True` if Nothing |
+| `is_some() → bool` | `True` if `Some` |
+| `is_none() → bool` | `True` if `Nothing` |
 | `unwrap()` | returns value or raises |
-| `map(f)` | transforms value if Some |
-| `and_then(f)` | chains Option-returning functions |
+| `unwrap_or(default)` | returns value or `default` |
+| `unwrap_or_else(f)` | returns value or `f()` |
+| `map(f)` | transforms value if `Some`; passes `Nothing` through |
+| `and_then(f)` | chains `Option`-returning functions |
 | `ok_or(err)` | converts `Some(v)` → `Ok(v)`, `Nothing` → `Err(err)` |
 | `ok_or_else(f)` | same but computes error lazily |
+
+---
 
 ### Polars Operations
 
@@ -202,11 +248,11 @@ All operations return `Result[T, PolarsError]` and never raise.
 from polars_result import read_csv, read_parquet, read_json, read_excel
 from polars_result import scan_csv, scan_parquet
 
-result      = read_csv("data.csv", separator=";")   # Result[DataFrame, PolarsError]
-lazy_result = scan_parquet("data.parquet")           # Result[LazyFrame, PolarsError]
-result = read_excel("data.xlsx")           # Result[DataFrame, PolarsError]
-result = read_excel("data.xlsx", sheet_name="Sheet1")           # Result[DataFrame, PolarsError]
-result = from_records([{"a": 1}, {"a": 2}])
+result      = read_csv("data.csv", separator=";")       # Result[DataFrame, PolarsError]
+lazy_result = scan_parquet("data.parquet")              # Result[LazyFrame, PolarsError]
+result      = read_excel("data.xlsx")                   # Result[DataFrame, PolarsError]
+result      = read_excel("data.xlsx", sheet_name="Sheet1")
+result      = from_records([{"a": 1}, {"a": 2}])
 ```
 
 **Constructing**
@@ -330,7 +376,9 @@ def process_sales(input_path: str, output_path: str) -> bool:
             total=pl.col("amount") * 1.08,
         ))
 
-        # Aggregate using PolarsResult.group_by (validates columns eagerly)
+        # Aggregate — group_by validates column names eagerly and returns a
+        # GroupBy object; we use .map (not .and_then) here because .agg is
+        # a plain transform that cannot fail
         .and_then(lambda df: PolarsResult.group_by(df, "category"))
         .map(lambda gb: gb.agg([
             pl.col("amount").sum().alias("total_sales"),
@@ -410,8 +458,11 @@ uv run pytest                                                # run tests
 uv run pytest --cov=src/polars_result --cov-report=html     # with coverage
 uv run ruff check src/ tests/                                # lint
 uv run ruff format src/ tests/                               # format
-uv run ty check src/                                              # type check
+uv run ty check src/                                         # type check (Astral ty)
 ```
+
+> [`ty`](https://github.com/astral-sh/ty) is Astral's type checker (the team behind `ruff` and `uv`).
+> `mypy` and `pyright` are also compatible if you prefer them.
 
 ## Contributing
 

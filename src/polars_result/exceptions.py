@@ -1,14 +1,8 @@
 """Custom exceptions for polars-result."""
 
-# from polars.exceptions import ComputeError
-
 
 class PolarsResultError(Exception):
     """Base exception for polars-result operations."""
-
-
-# class GoogleSheetError(PolarsResultError):
-#     """Error raised during Google Sheets operations."""
 
 
 class ValidationError(PolarsResultError):

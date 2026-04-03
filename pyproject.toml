@@ -3,7 +3,7 @@ name = "polars-result"
 version = "0.2.1"
 description = "Railway-oriented Result type for Polars data pipelines"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 license = { text = "MIT" }
 authors = [{ name = "Attica-oss", email = "g.mounac@gmail.com" }]
 keywords = ["polars", "result", "railway-oriented-programming", "error-handling"]
