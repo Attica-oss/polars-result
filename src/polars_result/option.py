@@ -4,16 +4,23 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
-from typing import Never
+from typing import Never, TypeIs
 
 from .result import Err, Ok, Result
 
 
-@dataclass
+@dataclass(frozen=True)
 class Some[T]:
     """Represents a value that exists."""
 
     value: T
+
+    def __bool__(self) -> bool:
+        """Truthy — reflects presence, not the wrapped value.
+
+        ``Some(0)`` / ``Some(None)`` / ``Some(False)`` are all truthy.
+        """
+        return True
 
     def is_some(self) -> bool:
         """Returns True if the option is a Some value."""
@@ -103,7 +110,7 @@ class Some[T]:
         return f"Some({self.value!r})"
 
 
-@dataclass
+@dataclass(frozen=True)
 class _NoneOption:
     """Represents the absence of a value.
 
@@ -112,6 +119,10 @@ class _NoneOption:
     variable so that ``Nothing`` (typed as ``_NoneOption[Never]``) does not
     propagate ``Never`` into call sites.
     """
+
+    def __bool__(self) -> bool:
+        """Falsy — enables ``if option:`` / ``if not option:``."""
+        return False
 
     def is_some(self) -> bool:
         """Returns False — Nothing never contains a value."""
@@ -198,3 +209,17 @@ Nothing = _NoneOption()
 
 # Type alias
 type Option[T] = Some[T] | _NoneOption
+
+
+def is_some[T](option: Option[T]) -> TypeIs[Some[T]]:
+    """Type-narrowing guard: ``if is_some(o): reveal_type(o)  # Some[T]``.
+
+    The ``o.is_some()`` method returns a plain ``bool`` and cannot narrow an
+    ``Option`` union for a type checker; this free function can.
+    """
+    return isinstance(option, Some)
+
+
+def is_none[T](option: Option[T]) -> TypeIs[_NoneOption]:
+    """Type-narrowing guard: ``if is_none(o): ...`` narrows away ``Some``."""
+    return isinstance(option, _NoneOption)

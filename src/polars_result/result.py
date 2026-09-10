@@ -4,19 +4,19 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
-from typing import Never
+from typing import Never, TypeIs
 
 
-class Infallible:
-    """A type that can never be instantiated (like Rust's !)"""
-
-    def __init__(self) -> None:
-        raise TypeError("Infallible cannot be instantiated")
-
-
-@dataclass
+@dataclass(frozen=True)
 class Ok[T]:
     value: T
+
+    def __bool__(self) -> bool:
+        """Truthy — reflects the Ok/Err state, not the wrapped value.
+
+        ``Ok(0)`` / ``Ok(None)`` / ``Ok(False)`` are all truthy.
+        """
+        return True
 
     def is_ok(self) -> bool:
         return True
@@ -59,10 +59,6 @@ class Ok[T]:
 
     def map_or_else[E, U](self, default: Callable[[E], U], f: Callable[[T], U]) -> U:
         """Maps Ok value using f, or computes default from error"""
-        return f(self.value)
-
-    def map_or_default[U](self, f: Callable[[T], U], default: U) -> U:
-        """Maps Ok value using f, or returns default if Err"""
         return f(self.value)
 
     def and_then[E, U](self, fn: Callable[[T], Result[U, E]]) -> Result[U, E]:
@@ -116,12 +112,16 @@ class Ok[T]:
         raise TypeError("Called into_err on Ok variant")
 
     def __repr__(self) -> str:
-        return f"Ok({self.value})"
+        return f"Ok({self.value!r})"
 
 
-@dataclass
+@dataclass(frozen=True)
 class Err[E]:
     error: E
+
+    def __bool__(self) -> bool:
+        """Falsy — enables ``if result:`` / ``if not result:`` on a Result."""
+        return False
 
     def is_ok(self) -> bool:
         return False
@@ -166,10 +166,6 @@ class Err[E]:
         """Maps Ok value using f, or computes default from error"""
         return default(self.error)
 
-    def map_or_default[T, U](self, f: Callable[[T], U], default: U) -> U:
-        """Maps Ok value using f, or returns default if Err"""
-        return default
-
     def and_then[T, U](self, fn: Callable[[T], Result[U, E]]) -> Result[U, E]:
         return self
 
@@ -194,11 +190,11 @@ class Err[E]:
         f(self.error)
         return self
 
-    def iter[T](self) -> Iterator[T]:
+    def iter(self) -> Iterator[Never]:
         """Returns an empty iterator"""
         return iter(())
 
-    def __iter__[T](self) -> Iterator[T]:
+    def __iter__(self) -> Iterator[Never]:
         """Makes Err directly iterable (yields nothing)"""
         return self.iter()
 
@@ -215,7 +211,21 @@ class Err[E]:
         return self.error
 
     def __repr__(self) -> str:
-        return f"Err({self.error})"
+        return f"Err({self.error!r})"
 
 
 type Result[T, E] = Ok[T] | Err[E]
+
+
+def is_ok[T, E](result: Result[T, E]) -> TypeIs[Ok[T]]:
+    """Type-narrowing guard: ``if is_ok(r): reveal_type(r)  # Ok[T]``.
+
+    The ``r.is_ok()`` method returns a plain ``bool`` and cannot narrow a
+    ``Result`` union for a type checker; this free function can.
+    """
+    return isinstance(result, Ok)
+
+
+def is_err[T, E](result: Result[T, E]) -> TypeIs[Err[E]]:
+    """Type-narrowing guard: ``if is_err(r): reveal_type(r)  # Err[E]``."""
+    return isinstance(result, Err)

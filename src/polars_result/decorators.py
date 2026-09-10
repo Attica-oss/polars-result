@@ -2,10 +2,11 @@
 
 import functools
 from collections.abc import Callable
-from typing import cast, overload
+from typing import overload
 
+from .catch import catch
 from .exceptions import PipelineError, PolarsResultError
-from .result import Err, Ok, Result
+from .result import Result
 
 
 @overload
@@ -53,9 +54,10 @@ def resultify[**P, R](
         Exception type(s) to catch. Defaults to ``Exception`` (catches all).
         Unmatched exceptions propagate normally.
     error_type:
-        ``PolarsResultError`` subclass used to wrap caught errors.
-        Defaults to ``PipelineError``. The original exception is preserved
-        as ``error_type.cause``.
+        ``PolarsResultError`` subclass used to wrap caught errors. Defaults to
+        ``PipelineError``. A caught Polars error is mapped to its structured
+        subclass instead (see :func:`~polars_result.catch.catch`). The original
+        exception is preserved as ``.cause``.
     """
 
     def decorator(fn: Callable[P, R]) -> Callable[P, Result[R, PolarsResultError]]:
@@ -63,13 +65,12 @@ def resultify[**P, R](
 
         @functools.wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[R, PolarsResultError]:
-            try:
-                value = fn(*args, **kwargs)
-                if isinstance(value, (Ok, Err)):
-                    return cast(Result[R, PolarsResultError], value)
-                return cast(Result[R, PolarsResultError], Ok(value))
-            except catch_types as e:
-                return Err(error_type(f"{fn_name} failed: {e}", cause=e))
+            return catch(
+                lambda: fn(*args, **kwargs),
+                catch_types=catch_types,
+                error_type=error_type,
+                context=f"{fn_name} failed",
+            )
 
         return wrapper
 

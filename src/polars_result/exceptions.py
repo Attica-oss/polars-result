@@ -22,20 +22,26 @@ class PolarsResultError(Exception):
     caught during pipeline execution.
 
     Examples:
-        >>> raise PolarsResultError("something went wrong")
+        >>> PolarsResultError("something went wrong")
         PolarsResultError('something went wrong')
 
         >>> try:
         ...     int("bad")
         ... except ValueError as e:
-        ...     raise PolarsResultError("parse failed", cause=e) from e
+        ...     err = PolarsResultError("parse failed", cause=e)
+        >>> err.__cause__ is err.cause
+        True
     """
 
     def __init__(self, message: str, *, cause: BaseException | None = None) -> None:
         super().__init__(message)
         self.cause = cause
         if cause is not None:
+            # Mirror ``raise ... from cause``: chain the cause and suppress the
+            # implicit "During handling of the above exception" context so the
+            # traceback shows one clean chain.
             self.__cause__ = cause
+            self.__suppress_context__ = True
 
     def __repr__(self) -> str:
         if self.cause:
@@ -46,8 +52,9 @@ class PolarsResultError(Exception):
     def from_polars(cls, error: PolarsError, operation: str) -> "PolarsResultError":
         """Wrap a raw Polars exception with operation context.
 
-        Maps known Polars exception types to the appropriate subclass.
-        Falls back to ``PolarsResultError`` for unmapped types.
+        Maps known Polars exception types (and their subclasses) to the
+        appropriate subclass. Falls back to ``PolarsResultError`` for
+        unmapped types.
 
         Args:
             error: The original Polars exception.
@@ -59,12 +66,15 @@ class PolarsResultError(Exception):
         Examples:
             >>> from polars.exceptions import ComputeError
             >>> err = PolarsResultError.from_polars(ComputeError("overflow"), "compute totals")
-            >>> type(err)
-            <class 'PipelineError'>
-            >>> err.cause
-            ComputeError('overflow')
+            >>> type(err).__name__
+            'PipelineError'
+            >>> isinstance(err.cause, ComputeError)
+            True
         """
-        subtype = _POLARS_ERROR_MAP.get(type(error), cls)
+        subtype = next(
+            (mapped for base, mapped in _POLARS_ERROR_MAP.items() if isinstance(error, base)),
+            cls,
+        )
         return subtype(f"{operation}: {error}", cause=error)
 
 
